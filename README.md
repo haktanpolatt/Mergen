@@ -1,3 +1,5 @@
+<img src="Images/Mergen.png" alt="Mergen" height=500 />
+
 # ♟ MERGEN: Zekânın ve Stratejinin Ruhuyla Satranç Yapay Zekası
 Mergen, yalnızca bir satranç motoru değil; geçmişin bilgeliğini geleceğin zekâsıyla buluşturan, Türk mitolojisinin bilgelik ve isabet tanrısından ilham alan bir yapay zeka projesidir.
 
