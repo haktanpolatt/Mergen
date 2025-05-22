@@ -2,24 +2,24 @@
     <img src="Images/Mergen.png" alt="Mergen" height=500 />
 </div>
 
-# ♟ MERGEN: Zekânın ve Stratejinin Ruhuyla Satranç Yapay Zekası
-Mergen, yalnızca bir satranç motoru değil; geçmişin bilgeliğini geleceğin zekâsıyla buluşturan, Türk mitolojisinin bilgelik ve isabet tanrısından ilham alan bir yapay zeka projesidir.
+# ♟ MERGEN: A Chess AI Inspired by the Spirit of Intelligence and Strategy
+Mergen is not just a chess engine; it's an artificial intelligence project that bridges the wisdom of the past with the intellect of the future, inspired by the Turkish mythological deity of wisdom and precision.
 
-# 🧠 İlham Kaynağı: Mergen Kimdir?
-Türk mitolojisinde Mergen, zekâ, akıl ve bilgeliğin simgesi olarak bilinir. Elindeki yayla hedefi asla ıskalamayan bu göksel varlık, aynı zamanda keskin sezgilerin, derin kavrayışın ve isabetli kararların temsilcisidir. Mergen, mitlerde yalnızca savaşçı değil, aynı zamanda rehber ve düşünürdür.
-Biz de bu efsanevi figürden esinlenerek, hamlelerini yalnızca güce değil, öngörüye, dengeye ve sezgiye dayandıran bir satranç yapay zekası geliştirdik.
+# 🧠 Inspiration: Who is Mergen?
+In Turkish mythology, Mergen is known as the symbol of intelligence, wisdom, and insight. This celestial figure, who never misses a target with his bow, also represents keen intuition, deep understanding, and precise decision-making. In the myths, Mergen is not only a warrior but also a guide and philosopher.
+Drawing inspiration from this legendary figure, we have developed a chess AI that bases its moves not only on power but on foresight, balance, and intuition.
 
-# 🔧 Özellikler
-- ♟ Derin Hamle Tahmini: Mergen, her hamlesinde onlarca olasılığı değerlendirir; yalnızca güçlü değil, stratejik oynar.
-- 🌀 Zekâ ve Sezgi: Geleneksel motorlardan farklı olarak, Mergen belirli konumlarda agresif veya savunmacı tavırlar sergileyerek oyun stilini adapte edebilir.
-- 📚 Mitolojik Ruh, Modern Mühendislik: Adını geçmişin bilge okçusundan alan Mergen, Python üzerinde modern algoritmalarla inşa edildi.
-- 🕰️ Zamanla Gelişen Zekâ: Eğitim verileriyle birlikte öğrenir, açılışları tanır, rakip stratejilerini hatırlar.
+# 🔧 Features
+- ♟ Deep Move Prediction: Mergen evaluates dozens of possibilities with every move; it plays not just powerfully but strategically.
+- 🌀 Intelligence and Intuition: Unlike traditional engines, Mergen adapts its playing style, showing aggressive or defensive behavior depending on the situation.
+- 📚 Mythological Spirit, Modern Engineering: Named after the wise archer of the past, Mergen is built in Python with modern algorithms.
+- 🕰️ Evolving Intelligence: Learns from training data, recognizes openings, and remembers opponent strategies.
 
-# 🎯 Neden “Mergen”?
-Tıpkı mitolojik Mergen’in oku gibi, bu yapay zeka da satranç tahtasında her hamleyi bilgelikle ve keskinlikle yapar. İsmimiz, yalnızca bir çağrışım değil; aynı zamanda yapay zekamızın karakterini tanımlayan bir semboldür.
+# 🎯 Why “Mergen”?
+Just like the mythological Mergen’s arrow, this AI makes every move on the chessboard with wisdom and precision. The name is more than just a reference—it symbolizes the very character of our AI.
 
-# 📜 Lisans
-Mergen, MIT lisansı ile açık kaynak olarak sunulmaktadır. Katkılarınızı ve geliştirmelerinizi memnuniyetle karşılıyoruz.
+# 📜 License
+Mergen is open-source and released under the MIT license. We welcome your contributions and improvements.
 
-# ✨ Katkıda Bulunun
-Mergen, bir yapay zekadan daha fazlası: Mitolojik bir ruhla yazılmış bir yazılım. Sen de katkıda bulunarak bu efsanenin parçası olabilirsin.
+# ✨ Contribute
+Mergen is more than an artificial intelligence—it's a piece of software written with a mythological soul. Join the legend by contributing to the project.
