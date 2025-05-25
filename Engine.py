@@ -5,6 +5,7 @@
 ###############################
 
 import chess
+from datetime import date
 from Mergen import Mergen
 
 def evaluate_board(board):
@@ -20,7 +21,7 @@ def evaluate_board(board):
 
     return score
     
-def minimax(board, depth, maximizing_player):
+def minimax(board, depth, alpha, beta, maximizing_player):
     if depth == 0 or board.is_game_over():
         return evaluate_board(board)
 
@@ -29,9 +30,13 @@ def minimax(board, depth, maximizing_player):
 
         for move in board.legal_moves:
             board.push(move)
-            score = minimax(board, depth -1, not maximizing_player)
+            score = minimax(board, depth -1, alpha, beta, not maximizing_player)
             board.pop()
             max_eval = max(max_eval, score)
+            alpha = max(alpha, max_eval)
+            
+            if beta <= alpha:
+                break
 
         return max_eval
     
@@ -40,9 +45,13 @@ def minimax(board, depth, maximizing_player):
 
         for move in board.legal_moves:
             board.push(move)
-            score = minimax(board, depth - 1, not maximizing_player)
+            score = minimax(board, depth - 1, alpha, beta, not maximizing_player)
             board.pop()
             min_eval = min(min_eval, score)
+            beta = min(beta, min_eval)
+
+            if beta <= alpha:
+                break
 
         return min_eval
 
@@ -55,7 +64,7 @@ def find_best_move(board, depth, maximizing_player):
 
     for move in board.legal_moves:
         board.push(move)
-        score = minimax(board, depth - 1, not maximizing_player)
+        score = minimax(board, depth - 1, float('-inf'), float('inf'), not maximizing_player)
         board.pop()
 
         if maximizing_player == True and score > best_score:
@@ -84,6 +93,27 @@ def check_game_over(board):
         print("Draw by repetition.")
         return True
     return False
+
+def save_game_log(board, maximizing_player, depth):
+    # game_date = date.today().strftime("%d %B %Y")
+    mergen_color = "white" if maximizing_player else "black"
+    # result = board.outcome().winner
+    # result_str = "Mergen won" if result == (not maximizing_player) else "Human won" if result is not None else "Draw"
+
+    moves = []
+    board_copy = chess.Board()
+    for i, move in enumerate(board.move_stack):
+        if i % 2 == 0:
+            moves.append(f"{(i // 2) + 1}. {board_copy.san(move)}")
+        else:
+            moves[-1] += f" {board_copy.san(move)}"
+        board_copy.push(move)
+
+    with open("games.md", "a") as f:
+        f.write(f"- Mergen was **{mergen_color}**, depth = {depth}, with alpha-beta pruning\n")
+        f.write("```pgn\n")
+        f.write(" ".join(moves))
+        f.write("\n```\n")
 
 def main():
     mergen = Mergen()
@@ -118,6 +148,8 @@ def main():
 
         if check_game_over(board):
             break
+
+    save_game_log(board, maximizing_player=False, depth=5)
 
 if __name__ == "__main__":
     main()
