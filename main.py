@@ -5,41 +5,68 @@
 ###############################
 
 import chess
+import time
+from rich import print
+from rich.console import Console
 from Mergen import Mergen
 from CheckGame import check_game_over
 from Search import find_best_move
 from Notation import save_game_log
+from Board import print_board_rich
+from Time import format_time, print_status
+from Evaluation import evaluate_board
+
+console = Console()
 
 def main():
     mergen = Mergen()
+    white_time = 0.0
+    black_time = 0.0
 
-    print("Initial Board:")
-    mergen.print_board()
-
+    print(f"[blue]Initial Board:[/blue]")
     board = mergen.board
+    print_board_rich(board)
 
     while not board.is_game_over():
         try:
+            start_time = time.time()
             human_move_str = input("Your move (in UCI format, e.g. e2e4): ")
             human_move = chess.Move.from_uci(human_move_str)
+            elapsed = time.time() - start_time
+            white_time += elapsed
         except:
-            print("Illegal move, please try again.")
+            console.print("Illegal move, please try again.", style="bold red")
             continue
         
         if human_move in board.legal_moves:
+            print(f"[bold green]You played: {human_move_str}[/bold green]")
             board.push(human_move)
-            mergen.print_board()
+            print_board_rich(board)
+
+            score = evaluate_board(board)
+            white_score = max(score, 0)
+            black_score = -min(score, 0)
+            print_status(white_score, black_score, white_time, black_time)
         else:
-            print("Illegal move, please try again.")
+            console.print("Illegal move, please try again.", style="bold red")
             continue
         
         if check_game_over(board):
             break
-
+        
+        start_time = time.time()
         mergen_move = find_best_move(board, depth = 5, maximizing_player=False)
-        print(mergen_move)
+        elapsed = time.time() - start_time
+        black_time += elapsed
+        
+        print(f"[bold blue]Mergen played: {mergen_move}[/bold blue]")
         board.push(mergen_move)
-        mergen.print_board()
+        print_board_rich(board)
+
+        score = evaluate_board(board)
+        white_score = max(score, 0)
+        black_score = -min(score, 0)
+        print_status(white_score, black_score, white_time, black_time)
 
         if check_game_over(board):
             break
