@@ -4,7 +4,7 @@
 #                             #
 ###############################
 
-from Evaluation import evaluate_board
+from Source.Evaluation import evaluate_board
 
 def minimax(board, depth, alpha, beta, maximizing_player):
     if depth == 0 or board.is_game_over():
