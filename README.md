@@ -15,6 +15,28 @@ Drawing inspiration from this legendary figure, we have developed a chess AI tha
 - 📚 Mythological Spirit, Modern Engineering: Named after the wise archer of the past, Mergen is built in Python with modern algorithms.
 - 🕰️ Evolving Intelligence: Learns from training data, recognizes openings, and remembers opponent strategies.
 
+# 💻 How to Run Mergen?
+To run this project, simply follow the steps below:
+1. Clone the repository:
+```bash
+git clone https://github.com/haktanpolatt/Mergen.git
+cd Mergen
+```
+2. Install the required libraries:
+```bash
+pip install -r requirements.txt
+```
+The ```requirements.txt``` file includes the following dependencies:
+```text
+chess
+rich
+```
+3. Run the project:
+```bash
+python main.py
+```
+That’s it! 🎉 You're ready to start playing with Mergen.
+
 # 🎯 Why “Mergen”?
 Just like the mythological Mergen’s arrow, this AI makes every move on the chessboard with wisdom and precision. The name is more than just a reference—it symbolizes the very character of our AI.
 
