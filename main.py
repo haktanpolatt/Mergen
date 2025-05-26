@@ -8,13 +8,13 @@ import chess
 import time
 from rich import print
 from rich.console import Console
-from Mergen import Mergen
-from CheckGame import check_game_over
-from Search import find_best_move
-from Notation import save_game_log
-from Board import print_board_rich
-from Time import format_time, print_status
-from Evaluation import evaluate_board
+from Source.Mergen import Mergen
+from Source.CheckGame import check_game_over
+from Source.Search import find_best_move
+from Source.Notation import save_game_log
+from Source.Board import print_board_rich
+from Source.Time import print_status
+from Source.Evaluation import evaluate_board
 
 console = Console()
 
