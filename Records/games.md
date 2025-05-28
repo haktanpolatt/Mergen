@@ -18,3 +18,8 @@
 ```pgn
 1. e4 Nf6 2. e5 Nd5 3. c4 Nb4 4. a3 N4c6 5. Nf3 Na6 6. b4 d6 7. b5 Bg4 8. bxc6 bxc6 9. h3 Bh5 10. Be2 dxe5 11. Nxe5 Qd4 12. Qa4 Qe4 13. Nc3 Qxg2 14. Bxh5 Qxh1+ 15. Ke2 g6 16. Bf3 Qxh3 17. Qxc6+ Kd8 18. Nxf7+ Kc8 19. Qe8#
 ```
+## 28 May 2025
+- Mergen was **black**, depth = 5, with alpha-beta pruning, PST Added, 56,1% accuracy, 1500 points
+```pgn
+1. e4 e5 2. d4 Qe7 3. Nc3 Nf6 4. dxe5 Qxe5 5. Nf3 Qa5 6. e5 Ne4 7. Qd5 Nc5 8. Bc4 Be7 9. Qxf7+ Kd8 10. Qxg7 Rf8 11. Bg5 Ke8 12. Qxe7#
+```
