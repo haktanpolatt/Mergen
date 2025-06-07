@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "movegen.h": "c",
+        "stdio.h": "c",
+        "evaluate.h": "c",
+        "string.h": "c",
+        "board.h": "c",
+        "rules.h": "c",
+        "stdlib.h": "c",
+        "minimax.h": "c"
+    }
+}
