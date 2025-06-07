@@ -15,6 +15,7 @@ from Source.Notation import save_game_log
 from Source.Board import print_board_rich
 from Source.Time import print_status
 from Source.Evaluation import evaluate_board
+from Source.Interface import get_best_move_from_c
 
 console = Console()
 
@@ -55,7 +56,7 @@ def main():
             break
         
         start_time = time.time()
-        mergen_move = find_best_move(board, depth = 5, maximizing_player=False)
+        mergen_move = chess.Move.from_uci(get_best_move_from_c(board.fen(), depth=5))
         elapsed = time.time() - start_time
         black_time += elapsed
         
