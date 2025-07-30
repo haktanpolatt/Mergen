@@ -22,7 +22,7 @@ def save_game_log(board, maximizing_player, depth):
         board_copy.push(move)
 
     with open("Records/games.md", "a") as f:
-        f.write(f"- Mergen was **{mergen_color}**, depth = {depth}, with alpha-beta pruning\n")
+        f.write(f"- Mergen was **{mergen_color}**, depth = {depth}, with alpha-beta pruning, C integrated, zobrist and TT, \n")
         f.write("```pgn\n")
         f.write(" ".join(moves))
         f.write("\n```\n")
