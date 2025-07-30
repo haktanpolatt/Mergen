@@ -13,9 +13,9 @@
 
 void parse_fen(const char* fen, Position* pos) {
     int rank = 0, file = 0;
-    memset(pos, 0, sizeof(Position));  // tüm değerleri sıfırla
+    memset(pos, 0, sizeof(Position));  // Reset all values in Position
 
-    // Tahta yerleşimi
+    // Piece placement
     for (int i = 0; fen[i] && fen[i] != ' '; i++) {
         char c = fen[i];
         if (c == '/') {
@@ -31,11 +31,11 @@ void parse_fen(const char* fen, Position* pos) {
         }
     }
 
-    // Hamle sırası
+    // Moves' order
     const char* ptr = strchr(fen, ' ');
     if (ptr && *(ptr + 1) == 'w') pos->white_to_move = 1;
 
-    // Rok hakları
+    // Castling rights
     const char* castling = strchr(ptr + 1, ' ');
     if (castling) {
         castling += 1;
@@ -67,7 +67,7 @@ void fen_to_board(const char* fen, Position* pos) {
     int rank = 0, file = 0;
     const char* ptr = fen;
 
-    // Taş yerleşimi
+    // Piece placement
     while (*ptr && *ptr != ' ') {
         char c = *ptr++;
         if (c == '/') {
@@ -83,18 +83,18 @@ void fen_to_board(const char* fen, Position* pos) {
         }
     }
 
-    // 1 boşluk: sıradaki taraf
+    // 1st space: next part
     while (*ptr == ' ') ptr++;
     pos->white_to_move = (*ptr == 'w') ? 1 : 0;
 
-    // 2. boşluk: rok hakları (atla)
+    // 2nd space: castling rights
     int space_count = 0;
     while (*ptr && space_count < 2) {
         if (*ptr == ' ') space_count++;
         ptr++;
     }
 
-    // 3. boşluk sonrası: en passant hedef karesi
+    // 3rd space and others: en passant square
     pos->ep_rank = -1;
     pos->ep_file = -1;
 

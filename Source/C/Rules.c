@@ -31,7 +31,7 @@ int is_in_check(Position* pos, int is_white) {
     Piece (*board)[8] = pos->board;
     int king_rank = -1, king_file = -1;
 
-    // Şahın yerini bul
+    // Find the king's position
     for (int rank = 0; rank < 8; rank++) {
         for (int file = 0; file < 8; file++) {
             Piece p = board[rank][file];
@@ -43,7 +43,7 @@ int is_in_check(Position* pos, int is_white) {
         }
     }
 
-    if (king_rank == -1) return 0;  // şah yoksa tehditte değil
+    if (king_rank == -1) return 0;  // If king not found, return false
 
     char temp_moves[256][6];
     int count = generate_pseudo_legal_moves(pos, !is_white, temp_moves);
@@ -52,7 +52,7 @@ int is_in_check(Position* pos, int is_white) {
         int to_rank = '8' - temp_moves[i][3];
         int to_file = temp_moves[i][2] - 'a';
         if (to_rank == king_rank && to_file == king_file) {
-            return 1;  // şah tehdit altında
+            return 1;  // King is attacked
         }
     }
 
@@ -75,20 +75,21 @@ int find_king_file(Position* pos, int is_white) {
     return -1;
 }
 
-// Şah ve kale oynamamış olmalı, aradaki kareler boş olmalı
+// Check if the king can castle kingside or queenside
+// Returns 1 if can castle, 0 otherwise
 int can_castle_kingside(Position* pos, int is_white) {
     int rank = pos->white_to_move ? 7 : 0;
 
-    // Kale ve şah yerinde mi?
+    // Are the king and rook in their initial positions?
     Piece king = pos->board[rank][4];
     Piece rook = pos->board[rank][7];
     if (king.type != 'k' || king.is_white != pos->white_to_move) return 0;
     if (rook.type != 'r' || rook.is_white != pos->white_to_move) return 0;
 
-    // Aradaki kareler boş mu? (f ve g)
+    // Squares between the king and rook must be empty (f, g) → 5, 6
     if (pos->board[rank][5].type != 0 || pos->board[rank][6].type != 0) return 0;
 
-    // Rok hakkı var mı?
+    // Is there a castling right?
     if (pos->white_to_move && !pos->white_king_side_castle) return 0;
     if (!pos->white_to_move && !pos->black_king_side_castle) return 0;
 
@@ -103,12 +104,10 @@ int can_castle_queenside(Position* pos, int is_white) {
     if (king.type != 'k' || king.is_white != pos->white_to_move) return 0;
     if (rook.type != 'r' || rook.is_white != pos->white_to_move) return 0;
 
-    // Aradaki kareler boş mu? (b, c, d) → 1, 2, 3
     if (pos->board[rank][1].type != 0) return 0;
     if (pos->board[rank][2].type != 0) return 0;
     if (pos->board[rank][3].type != 0) return 0;
 
-    // Rok hakkı var mı?
     if (pos->white_to_move && !pos->white_queen_side_castle) return 0;
     if (!pos->white_to_move && !pos->black_queen_side_castle) return 0;
 

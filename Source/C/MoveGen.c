@@ -20,7 +20,7 @@ static void square_to_uci(int fr, int ff, int tr, int tf, char* buffer) {
     buffer[4] = '\0';
 }
 
-// Boş ve tehdit edilmeyen kare kontrolü
+// Empty or not attacked square
 static int is_empty(Piece board[8][8], int rank, int file) {
     return board[rank][file].type == 0;
 }
@@ -32,17 +32,17 @@ int generate_pawn_moves(Position* pos, int rank, int file, char moves[][6], int 
     int start_rank = is_white ? 6 : 1;
     int next_rank = rank + dir;
 
-    // 1 kare ileri
+    // Go 1 square forward
     if (next_rank >= 0 && next_rank < 8 && board[next_rank][file].type == 0) {
         square_to_uci(rank, file, next_rank, file, moves[move_index++]);
 
-        // 2 kare ileri
+        // Go 2 squares forward from starting position
         if (rank == start_rank && board[rank + dir * 2][file].type == 0) {
             square_to_uci(rank, file, rank + dir * 2, file, moves[move_index++]);
         }
     }
 
-    // Çapraz yeme (normal)
+    // Capture diagonally
     for (int df = -1; df <= 1; df += 2) {
         int new_file = file + df;
         if (new_file >= 0 && new_file < 8 && next_rank >= 0 && next_rank < 8) {
@@ -111,7 +111,7 @@ int generate_bishop_moves(Position* pos, int rank, int file, char moves[][6], in
                 if (target.is_white != is_white) {
                     square_to_uci(rank, file, r, f, moves[move_index++]);
                 }
-                break; // taş varsa dur
+                break; // Stop if we hit a piece
             }
 
             r += dr;
@@ -207,18 +207,18 @@ int generate_king_moves(Position* pos, int rank, int file, char moves[][6], int 
         }
     }
 
-    // Castling: Kısa ve uzun rok
+    // Castling
     if (is_white && rank == 7 && file == 4) {
         if (pos->white_king_side_castle &&
             board[7][5].type == 0 &&
             board[7][6].type == 0) {
-            square_to_uci(7, 4, 7, 6, moves[move_index++]);  // Kısa rok (O-O)
+            square_to_uci(7, 4, 7, 6, moves[move_index++]);  // Short castling (O-O)
         }
         if (pos->white_queen_side_castle &&
             board[7][1].type == 0 &&
             board[7][2].type == 0 &&
             board[7][3].type == 0) {
-            square_to_uci(7, 4, 7, 2, moves[move_index++]);  // Uzun rok (O-O-O)
+            square_to_uci(7, 4, 7, 2, moves[move_index++]);  // Long castling (O-O-O)
         }
     }
 
@@ -226,13 +226,13 @@ int generate_king_moves(Position* pos, int rank, int file, char moves[][6], int 
         if (pos->black_king_side_castle &&
             board[0][5].type == 0 &&
             board[0][6].type == 0) {
-            square_to_uci(0, 4, 0, 6, moves[move_index++]);  // Kısa rok
+            square_to_uci(0, 4, 0, 6, moves[move_index++]);  // Short castling (O-O)
         }
         if (pos->black_queen_side_castle &&
             board[0][1].type == 0 &&
             board[0][2].type == 0 &&
             board[0][3].type == 0) {
-            square_to_uci(0, 4, 0, 2, moves[move_index++]);  // Uzun rok
+            square_to_uci(0, 4, 0, 2, moves[move_index++]);  // Long castling (O-O-O)
         }
     }
 

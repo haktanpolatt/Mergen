@@ -19,7 +19,7 @@ typedef struct {
     int prev_ep_rank, prev_ep_file;
     int prev_white_to_move;
 
-    // Rok hakları
+    // Castling rights
     int prev_white_king_side_castle;
     int prev_white_queen_side_castle;
     int prev_black_king_side_castle;

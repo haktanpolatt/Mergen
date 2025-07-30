@@ -10,8 +10,8 @@
 #define BOARD_H
 
 typedef struct {
-    char type;      // p, n, b, r, q, k (küçük harf)
-    int is_white;   // 1 = beyaz, 0 = siyah
+    char type;      // p, n, b, r, q, k (minuscule)
+    int is_white;   // 1 = white, 0 = black
 } Piece;
 
 typedef struct {
@@ -23,7 +23,7 @@ typedef struct {
     int white_queen_side_castle;
     int black_king_side_castle;
     int black_queen_side_castle;
-    // ileride yarı hamle sayısı, hamle sayısı da eklenebilir
+    // Additional fields can be added here for more game state information
 } Position;
 
 void parse_fen(const char* fen, Position* pos);

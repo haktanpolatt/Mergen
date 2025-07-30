@@ -17,7 +17,7 @@ static float piece_value(char type) {
         case 'b': return 3.0;
         case 'r': return 5.0;
         case 'q': return 9.0;
-        case 'k': return 0.0; // şah değeri verilmez
+        case 'k': return 0.0; // King has no material value
         default:  return 0.0;
     }
 }
@@ -47,7 +47,7 @@ float evaluate_pawn_structure(Position* pos) {
     int white_pawn_files[8] = {0};
     int black_pawn_files[8] = {0};
 
-    // Önce tüm piyonları tarayalım
+    // First, count pawns in each file
     for (int rank = 0; rank < 8; rank++) {
         for (int file = 0; file < 8; file++) {
             Piece p = board[rank][file];
@@ -70,17 +70,18 @@ float evaluate_pawn_structure(Position* pos) {
             int forward = is_white ? -1 : 1;
             float modifier = is_white ? 1.0f : -1.0f;
 
-            // Çift piyon
+            // Doubled pawn
             int count = is_white ? white_pawn_files[file] : black_pawn_files[file];
             if (count > 1) score += modifier * -0.2f;
 
-            // İzole piyon
+            // Isolated pawn
             int left = file > 0     ? (is_white ? white_pawn_files[file - 1] : black_pawn_files[file - 1]) : 0;
             int right = file < 7    ? (is_white ? white_pawn_files[file + 1] : black_pawn_files[file + 1]) : 0;
             if (left == 0 && right == 0)
                 score += modifier * -0.25f;
 
-            // Geçer piyon (önünde düşman piyon yoksa)
+            // Passed pawn
+            // A passed pawn is one that has no opposing pawns blocking its path to promotion
             int passed = 1;
             for (int r = rank + forward; r >= 0 && r < 8; r += forward) {
                 for (int f = file - 1; f <= file + 1; f++) {
@@ -120,12 +121,13 @@ float evaluate_center_control(Position* pos) {
         int file = center_squares[i][1];
         Piece p = board[rank][file];
 
-        // Üzerinde taş varsa
+        // If the square is empty, continue
         if (p.type != 0) {
             score += p.is_white ? 0.2f : -0.2f;
         }
 
-        // Bu kareyi kim tehdit ediyor? → legal hamlelerle bulalım
+        // Check if the square is attacked by any piece
+        // Generate legal moves for both sides and check if the square is attacked
         char moves[256][6];
         int num_white = generate_legal_moves(pos, 1, moves);
         for (int m = 0; m < num_white; m++) {
@@ -161,17 +163,17 @@ float evaluate_development(Position* pos) {
 
             float modifier = p.is_white ? 1.0f : -1.0f;
 
-            // Gelişmemiş (1. ya da 8. yatayda)
+            // Non-developed pieces
             if ((p.is_white && rank == 7) || (!p.is_white && rank == 0)) {
                 score += modifier * -0.15f;
             }
 
-            // Hafif gelişmiş
+            // Littlely developed pieces
             if ((p.is_white && rank == 6) || (!p.is_white && rank == 1)) {
                 score += modifier * 0.1f;
             }
 
-            // Merkez sütunlara çıkmışsa (c,d,e,f = 2..5)
+            // If center squares are occupied (c,d,e,f = 2..5)
             if (file >= 2 && file <= 5) {
                 score += modifier * 0.05f;
             }
@@ -193,17 +195,18 @@ float evaluate_king_safety(Position* pos) {
 
             float modifier = king.is_white ? 1.0f : -1.0f;
 
-            // Merkezde mi?
+            // Is the king in the center?
             if ((file == 3 || file == 4) && (rank == 0 || rank == 7)) {
                 score += modifier * -0.2f;
             }
 
-            // Rok yapmış gibi bir pozisyonda mı? (örnek: g1 / c1 / g8 / c8)
+            // Is the king on the castle squares? (e.g.: g1 / c1 / g8 / c8)
             if ((file == 6 || file == 2) && (rank == 0 || rank == 7)) {
                 score += modifier * 0.3f;
             }
 
-            // Önünde piyon var mı?
+            // Check for pawn shield
+            // A pawn shield is a pawn in front of the king
             int front_rank = king.is_white ? rank - 1 : rank + 1;
             if (front_rank >= 0 && front_rank < 8) {
                 for (int df = -1; df <= 1; df++) {
@@ -231,7 +234,8 @@ float evaluate_rook_activity(Position* pos) {
     for (int file = 0; file < 8; file++) {
         int white_pawns = 0, black_pawns = 0;
 
-        // Piyon sayısını kontrol et
+        // Count pawns in the file
+        // This is used to determine if the rook has an open or semi-open file
         for (int rank = 0; rank < 8; rank++) {
             Piece p = board[rank][file];
             if (p.type == 'p') {
@@ -240,7 +244,8 @@ float evaluate_rook_activity(Position* pos) {
             }
         }
 
-        // Kale var mı bu sütunda?
+        // Check for rooks in the file
+        // If there are no pawns, it's an open file
         for (int rank = 0; rank < 8; rank++) {
             Piece p = board[rank][file];
             if (p.type != 'r') continue;
@@ -248,10 +253,10 @@ float evaluate_rook_activity(Position* pos) {
             float modifier = p.is_white ? 1.0f : -1.0f;
 
             if (white_pawns + black_pawns == 0) {
-                // Tam açık hat
+                // Fully open file
                 score += modifier * 0.3f;
             } else if ((p.is_white && white_pawns == 0) || (!p.is_white && black_pawns == 0)) {
-                // Yarı açık hat
+                // Semi-open file
                 score += modifier * 0.15f;
             }
         }
