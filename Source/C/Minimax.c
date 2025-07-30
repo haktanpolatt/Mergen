@@ -12,10 +12,21 @@
 #include "MoveGen.h"
 #include "Move.h"
 #include "Rules.h"
+#include "Zobrist.h"
+#include "TT.h"
 
 float minimax(Position* pos, int depth, float alpha, float beta, int maximizingPlayer) {
+    uint64_t hash = compute_zobrist_hash(pos);
+
+    float cached_eval;
+    if (tt_lookup(hash, &cached_eval, depth)) {
+        return cached_eval;
+    }
+
     if (depth == 0 || is_game_over(pos)) {
-        return evaluate_board(pos);
+        float eval = evaluate_board(pos);
+        tt_store(hash, eval, depth);
+        return eval;
     }
 
     char moves[256][6];
@@ -35,6 +46,7 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
             if (eval > alpha) alpha = eval;
             if (beta <= alpha) break;
         }
+        tt_store(hash, max_eval, depth);
         return max_eval;
     } else {
         float min_eval = 10000.0f;
@@ -50,6 +62,7 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
             if (eval < beta) beta = eval;
             if (beta <= alpha) break;
         }
+        tt_store(hash, min_eval, depth);
         return min_eval;
     }
 }

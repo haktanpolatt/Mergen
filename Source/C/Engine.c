@@ -6,7 +6,7 @@
 ###############################
 */
 
-// gcc -O3 -shared -o Engine.dll Engine.c Board.c MoveGen.c Evaluate.c Minimax.c Move.c Rules.c -Wno-stringop-overflow
+// gcc -O3 -shared -o Engine.dll Engine.c Board.c MoveGen.c Evaluate.c Minimax.c Move.c Rules.c Zobrist.c TT.c -Wno-stringop-overflow
 
 #include <string.h>
 #include "Board.h"
@@ -14,10 +14,21 @@
 #include "Evaluate.h"
 #include "Minimax.h"
 #include "Move.h"
+#include "Zobrist.h"
+#include "TT.h"
 
 // FIND BEST MOVE
+// This function finds the best move for the given position in FEN format using the minimax algorithm.
+// It returns the best move in standard algebraic notation.
 const char* find_best_move_from_fen(const char* fen, int depth) {
     static char best_move[6];
+    static int initialized = 0;
+
+    if (!initialized) {
+        init_zobrist();
+        tt_init();
+        initialized = 1;
+    }
 
     Position pos = {0};
     parse_fen(fen, &pos);
@@ -42,6 +53,14 @@ const char* find_best_move_from_fen(const char* fen, int depth) {
     }
 
     return best_move;
+}
+
+// EVALUATE BOARD
+// This function evaluates the board position given in FEN format and returns a score.
+float evaluate_fen(const char* fen) {
+    Position pos;
+    parse_fen(fen, &pos);
+    return evaluate_board(&pos);
 }
 
 
