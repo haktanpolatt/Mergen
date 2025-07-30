@@ -15,7 +15,7 @@ from Source.Notation import save_game_log
 from Source.Board import print_board_rich
 from Source.Time import print_status
 from Source.Evaluation import evaluate_board
-from Source.Interface import get_best_move_from_c
+from Source.Interface import get_best_move_from_c, get_eval_from_c
 
 console = Console()
 
@@ -44,7 +44,7 @@ def main():
             board.push(human_move)
             print_board_rich(board)
 
-            score = evaluate_board(board)
+            score = get_eval_from_c(board.fen())
             white_score = max(score, 0)
             black_score = -min(score, 0)
             print_status(white_score, black_score, white_time, black_time)
@@ -64,7 +64,7 @@ def main():
         board.push(mergen_move)
         print_board_rich(board)
 
-        score = evaluate_board(board)
+        score = get_eval_from_c(board.fen())
         white_score = max(score, 0)
         black_score = -min(score, 0)
         print_status(white_score, black_score, white_time, black_time)
