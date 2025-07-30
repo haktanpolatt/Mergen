@@ -23,7 +23,11 @@
 ```pgn
 1. e4 e5 2. d4 Qe7 3. Nc3 Nf6 4. dxe5 Qxe5 5. Nf3 Qa5 6. e5 Ne4 7. Qd5 Nc5 8. Bc4 Be7 9. Qxf7+ Kd8 10. Qxg7 Rf8 11. Bg5 Ke8 12. Qxe7#
 ```
-- Mergen was **black**, depth = 5, with alpha-beta pruning, with C codes, 1500 points
+- Mergen was **black**, depth = 5, with alpha-beta pruning, C integrated, 1500 points
 ```pgn
 1. e4 Nc6 2. d4 Nf6 3. e5 Nd5 4. c4 Nb6 5. d5 Nxe5 6. c5 e6 7. cxb6 Qh4 8. bxc7 Qe4+ 9. Be3 Qb4+ 10. Nc3 Qxb2 11. Rc1 Bb4 12. Bd2 exd5 13. Nxd5 Bxd2+ 14. Qxd2 Qa3 15. Rc3 Qd6 16. Qg5 Qxd5 17. Qd8#
+```
+- Mergen was **black**, depth = 5, with alpha-beta pruning, C integrated, zobrist and TT, 1600 points
+```pgn
+1. e4 e5 2. Nf3 Qf6 3. Nc3 Ne7 4. d4 Qd6 5. Nxe5 Nbc6 6. Nb5 Qb4+ 7. Bd2 Qxb2 8. Rb1 Qxa2 9. Bc4 Qa4 10. Bb3 Qxb5 11. Bxf7+ Kd8 12. Rxb5 Nxd4 13. Rd5 Nxd5 14. Bxd5 Ke8 15. Qh5+ g6 16. Bf7+ Ke7 17. Qg5+ Kd6 18. Nc4+ Kc6 19. Qd5#
 ```
