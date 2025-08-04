@@ -15,27 +15,80 @@ Drawing inspiration from this legendary figure, we have developed a chess AI tha
 - 📚 Mythological Spirit, Modern Engineering: Named after the wise archer of the past, Mergen is built in Python with modern algorithms.
 - 🕰️ Evolving Intelligence: Learns from training data, recognizes openings, and remembers opponent strategies.
 
-# 💻 How to Run Mergen?
-To run this project, simply follow the steps below:
-1. Clone the repository:
+## 💻 How to Run Mergen?
+
+### 1️⃣ Prerequisites
+Before running Mergen, ensure you have the following installed:
+
+- **Python** `3.11.9` (or compatible 3.11.x version)
+- **GCC Compiler** (for building the C engine)
+  - **Windows:** [MinGW-w64](https://www.mingw-w64.org/) or similar
+  - **Linux/macOS:** GCC is usually pre-installed. If not:
+    ```bash
+    sudo apt install build-essential   # Ubuntu/Debian
+    sudo pacman -S base-devel          # Arch
+    xcode-select --install             # macOS
+    ```
+
+---
+
+### 2️⃣ Installation
+1. **Clone the repository:**
+    ```bash
+    git clone https://github.com/haktanpolatt/Mergen.git
+    cd Mergen
+    ```
+2. **Install the required Python libraries:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+    The `requirements.txt` includes:
+    ```text
+    chess
+    rich
+    ```
+
+---
+
+### 3️⃣ Running the Project
+
+#### 🔹 Step 1 — Build the Engine
+Run `Interface.py` first to build and load the C engine:
 ```bash
-git clone https://github.com/haktanpolatt/Mergen.git
-cd Mergen
+python Interface.py
 ```
-2. Install the required libraries:
-```bash
-pip install -r requirements.txt
-```
-The ```requirements.txt``` file includes the following dependencies:
-```text
-chess
-rich
-```
-3. Run the project:
+
+- On the first run, Interface.py will:
+  - Detect your OS (Windows/Linux/macOS)
+  - Automatically compile the C engine into .dll, .so, or .dylib
+  - Load it into Python
+
+#### 🔹 Step 2 — Start the Game
+After building the engine, you can run the main program:
 ```bash
 python main.py
 ```
-That’s it! 🎉 You're ready to start playing with Mergen.
+
+### 4️⃣ Manual Build (Optional)
+If you prefer to compile the C engine yourself:
+
+#### Windows (MinGW):
+```bash
+cd Source\C
+gcc -O3 -shared -o Engine.dll Engine.c Board.c MoveGen.c Evaluate.c Minimax.c Move.c Rules.c Zobrist.c TT.c Ordering.c KillerMoves.c -Wno-stringop-overflow
+```
+
+#### Linux:
+```bash
+cd Source/C
+gcc -O3 -shared -fPIC -o Engine.so Engine.c Board.c MoveGen.c Evaluate.c Minimax.c Move.c Rules.c Zobrist.c TT.c Ordering.c KillerMoves.c -Wno-stringop-overflow
+```
+
+#### macOS:
+```bash
+cd Source/C
+gcc -O3 -shared -fPIC -o Engine.dylib Engine.c Board.c MoveGen.c Evaluate.c Minimax.c Move.c Rules.c Zobrist.c TT.c Ordering.c KillerMoves.c -Wno-stringop-overflow
+```
 
 # 🎯 Why “Mergen”?
 Just like the mythological Mergen’s arrow, this AI makes every move on the chessboard with wisdom and precision. The name is more than just a reference—it symbolizes the very character of our AI.
