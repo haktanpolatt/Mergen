@@ -6,7 +6,7 @@
 ###############################
 */
 
-// gcc -O3 -shared -o Engine.dll Engine.c Board.c MoveGen.c Evaluate.c Minimax.c Move.c Rules.c Zobrist.c TT.c -Wno-stringop-overflow
+// gcc -O3 -shared -o Engine.dll Engine.c Board.c MoveGen.c Evaluate.c Minimax.c Move.c Rules.c Zobrist.c TT.c Ordering.c KillerMoves.c -Wno-stringop-overflow
 
 #include <string.h>
 #include "Board.h"
@@ -16,6 +16,7 @@
 #include "Move.h"
 #include "Zobrist.h"
 #include "TT.h"
+#include "Ordering.h"
 
 // FIND BEST MOVE
 // This function finds the best move for the given position in FEN format using the minimax algorithm.

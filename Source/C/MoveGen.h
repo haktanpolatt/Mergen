@@ -21,4 +21,6 @@ int generate_king_moves(Position* pos, int rank, int file, char moves[][6], int 
 int generate_pseudo_legal_moves(Position* pos, int is_white, char moves[][6]);
 int generate_legal_moves(Position* pos, int is_white, char moves[][6]);
 
+int generate_capture_moves(Position* pos, int is_white, char moves[][6]);
+
 #endif

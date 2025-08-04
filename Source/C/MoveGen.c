@@ -279,3 +279,132 @@ int generate_legal_moves(Position* pos, int is_white, char moves[][6]) {
     return move_index;
 }
 
+static int generate_pawn_capture_moves(Position* pos, int rank, int file, char moves[][6], int move_index) {
+    Piece (*board)[8] = pos->board;
+    int is_white = board[rank][file].is_white;
+    int dir = is_white ? -1 : 1;
+    int next_rank = rank + dir;
+
+    // Normal diagonal captures
+    for (int df = -1; df <= 1; df += 2) {
+        int new_file = file + df;
+        if (new_file >= 0 && new_file < 8 && next_rank >= 0 && next_rank < 8) {
+            Piece target = board[next_rank][new_file];
+            if (target.type != 0 && target.is_white != is_white) {
+                square_to_uci(rank, file, next_rank, new_file, moves[move_index++]);
+            }
+        }
+    }
+
+    // En passant
+    if (pos->ep_rank != -1 && pos->ep_file != -1) {
+        if (rank == (is_white ? 3 : 4) &&
+            abs(file - pos->ep_file) == 1 &&
+            pos->ep_rank == next_rank) {
+            square_to_uci(rank, file, pos->ep_rank, pos->ep_file, moves[move_index++]);
+        }
+    }
+
+    return move_index;
+}
+
+static int generate_knight_capture_moves(Position* pos, int rank, int file, char moves[][6], int move_index) {
+    Piece (*board)[8] = pos->board;
+    int is_white = board[rank][file].is_white;
+    int directions[8][2] = {
+        {-2, -1}, {-2, 1}, {-1, -2}, {-1, 2},
+        {1, -2},  {1, 2},  {2, -1},  {2, 1}
+    };
+
+    for (int i = 0; i < 8; i++) {
+        int r = rank + directions[i][0];
+        int f = file + directions[i][1];
+        if (r >= 0 && r < 8 && f >= 0 && f < 8) {
+            Piece target = board[r][f];
+            if (target.type != 0 && target.is_white != is_white) {
+                square_to_uci(rank, file, r, f, moves[move_index++]);
+            }
+        }
+    }
+    return move_index;
+}
+
+static int generate_sliding_capture_moves(Position* pos, int rank, int file, char moves[][6], int move_index, int directions[][2], int dir_count) {
+    Piece (*board)[8] = pos->board;
+    int is_white = board[rank][file].is_white;
+
+    for (int d = 0; d < dir_count; d++) {
+        int r = rank + directions[d][0];
+        int f = file + directions[d][1];
+
+        while (r >= 0 && r < 8 && f >= 0 && f < 8) {
+            Piece target = board[r][f];
+            if (target.type != 0) {
+                if (target.is_white != is_white) {
+                    square_to_uci(rank, file, r, f, moves[move_index++]);
+                }
+                break; // stop if we hit a piece
+            }
+            r += directions[d][0];
+            f += directions[d][1];
+        }
+    }
+    return move_index;
+}
+
+static int generate_king_capture_moves(Position* pos, int rank, int file, char moves[][6], int move_index) {
+    Piece (*board)[8] = pos->board;
+    int is_white = board[rank][file].is_white;
+    int directions[8][2] = {
+        {-1, 0}, {1, 0}, {0, -1}, {0, 1},
+        {-1, -1}, {-1, 1}, {1, -1}, {1, 1}
+    };
+
+    for (int d = 0; d < 8; d++) {
+        int r = rank + directions[d][0];
+        int f = file + directions[d][1];
+        if (r >= 0 && r < 8 && f >= 0 && f < 8) {
+            Piece target = board[r][f];
+            if (target.type != 0 && target.is_white != is_white) {
+                square_to_uci(rank, file, r, f, moves[move_index++]);
+            }
+        }
+    }
+    return move_index;
+}
+
+int generate_capture_moves(Position* pos, int is_white, char moves[][6]) {
+    int move_index = 0;
+    int bishop_dirs[4][2] = {{-1,-1},{-1,1},{1,-1},{1,1}};
+    int rook_dirs[4][2]   = {{-1,0},{1,0},{0,-1},{0,1}};
+    int queen_dirs[8][2]  = {{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,-1},{1,1}};
+
+    for (int rank = 0; rank < 8; rank++) {
+        for (int file = 0; file < 8; file++) {
+            Piece p = pos->board[rank][file];
+            if (p.type == 0 || p.is_white != is_white) continue;
+
+            switch (p.type) {
+                case 'p':
+                    move_index = generate_pawn_capture_moves(pos, rank, file, moves, move_index);
+                    break;
+                case 'n':
+                    move_index = generate_knight_capture_moves(pos, rank, file, moves, move_index);
+                    break;
+                case 'b':
+                    move_index = generate_sliding_capture_moves(pos, rank, file, moves, move_index, bishop_dirs, 4);
+                    break;
+                case 'r':
+                    move_index = generate_sliding_capture_moves(pos, rank, file, moves, move_index, rook_dirs, 4);
+                    break;
+                case 'q':
+                    move_index = generate_sliding_capture_moves(pos, rank, file, moves, move_index, queen_dirs, 8);
+                    break;
+                case 'k':
+                    move_index = generate_king_capture_moves(pos, rank, file, moves, move_index);
+                    break;
+            }
+        }
+    }
+    return move_index;
+}
