@@ -6,3 +6,6 @@ Source/C/Engine.dll
 Source/C/Engine.so
 Source/C/Engine.dylib
 
+# Python cache files
+__pycache__/
+Source/__pycache__/

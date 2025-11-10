@@ -95,3 +95,26 @@ def get_search_info_from_c(fen: str, depth: int = 4) -> str:
     info = lib.get_search_info(fen.encode(), depth)
     return info.decode()
 
+# find_best_move_timed_from_c
+lib.find_best_move_timed.argtypes = [ctypes.c_char_p, ctypes.c_float]
+lib.find_best_move_timed.restype = ctypes.c_char_p
+
+def find_best_move_timed_from_c(fen: str, max_time_ms: float) -> tuple:
+    """
+    Find best move with time management.
+    Searches as deep as possible within time limit using iterative deepening.
+    
+    Args:
+        fen: Position in FEN format
+        max_time_ms: Maximum time in milliseconds
+        
+    Returns:
+        Tuple of (move_uci, depth_reached, time_spent_ms)
+    """
+    result = lib.find_best_move_timed(fen.encode(), max_time_ms)
+    result_str = result.decode()
+    parts = result_str.split()
+    if len(parts) >= 3:
+        return (parts[0], int(parts[1]), float(parts[2]))
+    return (parts[0], 0, 0.0)
+

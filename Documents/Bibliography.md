@@ -258,6 +258,72 @@ Opening books are databases of opening theory that allow chess engines to play s
 
 ---
 
+## Time Management
+
+### 12. Smart Time Allocation
+
+**Papers:**
+- Hyatt, R. M. (1997). "The Chess Program Crafty." *University of Alabama at Birmingham*.
+- Hsu, F. (2002). *Behind Deep Blue: Building the Computer that Defeated the World Chess Champion.* Princeton University Press.
+- Heinz, E. A. (1999). "Adaptive Null-Move Pruning." *ICCA Journal*, 22(3), pp. 123-132.
+
+**Description:**
+Time management is crucial for competitive chess play. A chess engine must decide how much time to spend on each move, balancing:
+1. **Depth of search**: Deeper search finds better moves but takes more time
+2. **Time remaining**: Must reserve time for future moves
+3. **Position complexity**: Complex positions deserve more time
+4. **Game phase**: Opening (use book), middlegame (critical), endgame (precision)
+5. **Move urgency**: Tactical positions need deeper calculation
+
+**Time Allocation Strategies:**
+- **Base Allocation**: Divide remaining time by estimated moves left
+- **Complexity Adjustment**: Multiply by position complexity factor (0.8-1.2)
+- **Phase Adjustment**: Opening (0.7x), Middlegame (1.2x), Endgame (1.0x)
+- **Emergency Mode**: When time < 10s, use minimal time per move
+- **Increment Consideration**: Add increment to available time
+
+**Time Controls Supported:**
+1. **Bullet** (< 3 min): Fast play, reduced thinking time
+2. **Blitz** (3-10 min): Quick decisions, moderate depth
+3. **Rapid** (10-60 min): Balanced play, good depth
+4. **Classical** (> 60 min): Deep analysis, maximum depth
+5. **Increment**: Add time per move (e.g., 3+2, 10+5)
+6. **Moves/Time**: X moves in Y minutes (e.g., 40/90)
+
+**Implementation in Mergen:**
+- Time management module in `Source/TimeManagement.py`
+- C engine support in `Engine.c` with `find_best_move_timed()`
+- Iterative deepening enables stopping at any time
+- Time-limited search stops when 90% of allocated time used
+- Complexity detection based on:
+  - Legal moves count (mobility)
+  - Material on board
+  - Checks and tactical opportunities
+  - Game phase
+
+**Key Features:**
+1. **Adaptive Allocation**: Adjusts based on position
+2. **Safe Time Management**: Always reserves buffer time
+3. **Emergency Handling**: Special mode for low time
+4. **Phase-Aware**: Different strategies per game phase
+5. **Incremental Support**: Handles Fischer increment
+
+**Formula:**
+```
+base_time = (total_time - buffer) / estimated_moves_remaining
+adjusted_time = base_time × tc_factor × phase_factor × complexity_factor
+target_time = clamp(adjusted_time, min_time, max_time)
+```
+
+**Typical Time Allocation:**
+- **Opening**: 0.5-2 seconds (use book when possible)
+- **Middlegame**: 3-10 seconds (most critical phase)
+- **Endgame**: 2-5 seconds (precision important)
+- **Tactical position**: +50% time (needs deeper search)
+- **Emergency (< 10s)**: 0.1-0.5 seconds per move
+
+---
+
 ## Future Techniques to Implement
 
 The following techniques are commonly used in modern chess engines and are candidates for future implementation in Mergen:

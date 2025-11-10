@@ -15,8 +15,9 @@ Drawing inspiration from this legendary figure, we have developed a chess AI tha
 - 📚 **Opening Book**: Plays 25+ established opening systems including Ruy Lopez, Sicilian Defense, and Queen's Gambit
 - 🎯 **Tactical Awareness**: Quiescence search prevents horizon effect and tactical blindness
 - ⚡ **Optimized Performance**: Transposition tables with Zobrist hashing, killer move heuristic, and move ordering
-- � **Search Enhancements**: Iterative deepening with Principal Variation (PV) tracking
+- 🔍 **Search Enhancements**: Iterative deepening with Principal Variation (PV) tracking
 - 📖 **Pawn Promotion Choice**: Select promotion piece (queen, rook, bishop, knight)
+- ⏱️ **Smart Time Management**: Adaptive time allocation with support for bullet, blitz, rapid, and classical time controls
 - 🕰️ **Time-Aware**: Tracks thinking time and provides search statistics
 
 ## 💻 How to Run Mergen?
@@ -105,6 +106,14 @@ gcc -O3 -shared -fPIC -o Engine.dylib Engine.c Board.c MoveGen.c Evaluate.c Mini
 - **Principal Variation Tracking**: Shows engine's intended continuation
 - **Search Information Display**: Real-time depth, evaluation, and PV
 
+### Time Management ⏱️ NEW!
+- **Smart Time Allocation**: Adjusts based on position complexity and game phase
+- **Multiple Time Controls**: Bullet, Blitz, Rapid, Classical, Infinite
+- **Increment Support**: Handles Fischer increment (e.g., 3+2, 10+5)
+- **Emergency Mode**: Special handling when time < 10 seconds
+- **Adaptive Depth**: Searches as deep as possible within time limit
+- See `Documents/TimeManagement.md` for details
+
 ### Opening Book
 - 25+ major opening systems
 - Instant book moves (no calculation needed)
@@ -113,6 +122,7 @@ gcc -O3 -shared -fPIC -o Engine.dylib Engine.c Board.c MoveGen.c Evaluate.c Mini
 
 ### Documentation
 - **Bibliography**: Academic references for all algorithms (`Documents/Bibliography.md`)
+- **Time Management Guide**: Complete guide to time controls (`Documents/TimeManagement.md`)
 - Proper citations for minimax, alpha-beta, transposition tables, and more
 
 # 🎯 Why "Mergen"?

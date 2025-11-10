@@ -10,6 +10,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <time.h>
 #include "Board.h"
 #include "MoveGen.h"
 #include "Evaluate.h"
@@ -152,6 +153,116 @@ const char* get_search_info(const char* fen, int max_depth) {
     snprintf(info, sizeof(info), "%d %.2f %s", max_depth, final_score, best_move);
     return info;
 }
+
+// FIND BEST MOVE WITH TIME MANAGEMENT
+// This function finds the best move with iterative deepening and time management.
+// It will search as deep as possible within the given time limit.
+// Returns: "move depth time_spent"
+const char* find_best_move_timed(const char* fen, float max_time_ms) {
+    static char result[64];
+    static char best_move[6];
+    static char pv[6];
+    static int initialized = 0;
+
+    if (!initialized) {
+        init_zobrist();
+        tt_init();
+        initialized = 1;
+    }
+
+    clock_t start_time = clock();
+    float max_time_clocks = (max_time_ms / 1000.0f) * CLOCKS_PER_SEC;
+
+    Position pos = {0};
+    parse_fen(fen, &pos);
+    int is_white = pos.white_to_move;
+
+    char moves[256][6];
+    int num_moves = generate_legal_moves(&pos, is_white, moves);
+
+    if (num_moves == 0) {
+        snprintf(result, sizeof(result), "%s 0 0.0", moves[0]);
+        return result;
+    }
+
+    // Initialize best move
+    strcpy(best_move, moves[0]);
+    int completed_depth = 0;
+
+    // Iterative deepening with time control
+    for (int current_depth = 1; current_depth <= 20; current_depth++) {
+        // Check time before starting new depth
+        clock_t current_time = clock();
+        float elapsed = (float)(current_time - start_time);
+        
+        if (elapsed >= max_time_clocks * 0.9) {
+            // 90% of time used, don't start new depth
+            break;
+        }
+
+        float best_score = is_white ? -10000.0f : 10000.0f;
+        char current_best[6];
+        strcpy(current_best, best_move);
+
+        // Try PV move first if we have one
+        if (current_depth > 1) {
+            for (int i = 0; i < num_moves; i++) {
+                if (strcmp(moves[i], pv) == 0 && i != 0) {
+                    char temp[6];
+                    strcpy(temp, moves[i]);
+                    for (int j = i; j > 0; j--) {
+                        strcpy(moves[j], moves[j-1]);
+                    }
+                    strcpy(moves[0], temp);
+                    break;
+                }
+            }
+        }
+
+        // Search all moves at this depth
+        int moves_searched = 0;
+        for (int i = 0; i < num_moves; i++) {
+            // Check time during search
+            current_time = clock();
+            elapsed = (float)(current_time - start_time);
+            if (elapsed >= max_time_clocks) {
+                break;  // Time's up
+            }
+
+            Position copy = pos;
+            make_move(&copy, moves[i]);
+
+            float score = minimax(&copy, current_depth - 1, -10000.0f, 10000.0f, !is_white);
+
+            if ((is_white && score > best_score) || (!is_white && score < best_score)) {
+                best_score = score;
+                strcpy(current_best, moves[i]);
+            }
+
+            moves_searched++;
+        }
+
+        // Only update if we completed the depth
+        if (moves_searched == num_moves) {
+            strcpy(best_move, current_best);
+            strcpy(pv, current_best);
+            completed_depth = current_depth;
+        } else {
+            // Didn't finish this depth, use previous result
+            break;
+        }
+    }
+
+    clock_t end_time = clock();
+    float time_spent = ((float)(end_time - start_time) / CLOCKS_PER_SEC) * 1000.0f;
+
+    // Format: "move depth time_spent_ms"
+    snprintf(result, sizeof(result), "%s %d %.1f", best_move, completed_depth, time_spent);
+    return result;
+}
+
+
+
 
 
 
