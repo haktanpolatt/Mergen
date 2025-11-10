@@ -3,27 +3,37 @@
     {
       "uci": "e2e4",
       "weight": 150,
-      "name": "Modern Defense (move 1)"
+      "name": "Nimzowitsch Defense (move 1)"
     },
     {
       "uci": "d2d4",
       "weight": 150,
-      "name": "Benoni Defense (move 1)"
+      "name": "Budapest Gambit (move 1)"
     },
     {
       "uci": "c2c4",
-      "weight": 120,
-      "name": "English Opening (move 1)"
+      "weight": 130,
+      "name": "English - Four Knights (move 1)"
     },
     {
       "uci": "f2f4",
-      "weight": 90,
-      "name": "Bird's Opening (move 1)"
+      "weight": 100,
+      "name": "Bird's - From's Gambit (move 1)"
     },
     {
       "uci": "g1f3",
-      "weight": 110,
-      "name": "R\u00e9ti Opening (move 1)"
+      "weight": 120,
+      "name": "King's Indian Attack (move 1)"
+    },
+    {
+      "uci": "b2b3",
+      "weight": 95,
+      "name": "Larsen's Opening (move 1)"
+    },
+    {
+      "uci": "b2b4",
+      "weight": 85,
+      "name": "Polish Opening (move 1)"
     }
   ],
   "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq -": [
@@ -34,38 +44,48 @@
     },
     {
       "uci": "c7c5",
-      "weight": 140,
-      "name": "Sicilian Defense - Open (move 2)"
+      "weight": 145,
+      "name": "Sicilian - Alapin (move 2)"
     },
     {
       "uci": "e7e6",
       "weight": 130,
-      "name": "French Defense (move 2)"
+      "name": "French - Exchange (move 2)"
     },
     {
       "uci": "c7c6",
       "weight": 130,
-      "name": "Caro-Kann Defense (move 2)"
+      "name": "Caro-Kann - Exchange (move 2)"
     },
     {
       "uci": "d7d5",
-      "weight": 100,
-      "name": "Scandinavian Defense (move 2)"
+      "weight": 110,
+      "name": "Scandinavian - Modern (move 2)"
     },
     {
       "uci": "g8f6",
-      "weight": 100,
-      "name": "Alekhine's Defense (move 2)"
+      "weight": 105,
+      "name": "Alekhine's - Four Pawns (move 2)"
     },
     {
       "uci": "d7d6",
-      "weight": 100,
+      "weight": 110,
       "name": "Pirc Defense (move 2)"
     },
     {
       "uci": "g7g6",
-      "weight": 90,
+      "weight": 100,
       "name": "Modern Defense (move 2)"
+    },
+    {
+      "uci": "b7b6",
+      "weight": 85,
+      "name": "Owen's Defense (move 2)"
+    },
+    {
+      "uci": "b8c6",
+      "weight": 90,
+      "name": "Nimzowitsch Defense (move 2)"
     }
   ],
   "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -": [
@@ -73,6 +93,26 @@
       "uci": "g1f3",
       "weight": 150,
       "name": "Petrov's Defense (move 3)"
+    },
+    {
+      "uci": "f2f4",
+      "weight": 105,
+      "name": "King's Gambit Accepted (move 3)"
+    },
+    {
+      "uci": "b1c3",
+      "weight": 110,
+      "name": "Vienna Game (move 3)"
+    },
+    {
+      "uci": "f1c4",
+      "weight": 105,
+      "name": "Bishop's Opening (move 3)"
+    },
+    {
+      "uci": "d2d4",
+      "weight": 95,
+      "name": "Center Game (move 3)"
     }
   ],
   "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq -": [
@@ -85,18 +125,23 @@
       "uci": "g8f6",
       "weight": 110,
       "name": "Petrov's Defense (move 4)"
+    },
+    {
+      "uci": "d7d6",
+      "weight": 100,
+      "name": "Philidor Defense (move 4)"
     }
   ],
   "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq -": [
     {
       "uci": "f1c4",
       "weight": 150,
-      "name": "Italian Game (move 5)"
+      "name": "Two Knights Defense (move 5)"
     },
     {
       "uci": "f1b5",
       "weight": 150,
-      "name": "Ruy Lopez (move 5)"
+      "name": "Ruy Lopez - Morphy Defense (move 5)"
     },
     {
       "uci": "d2d4",
@@ -112,174 +157,219 @@
   "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -": [
     {
       "uci": "g1f3",
-      "weight": 140,
-      "name": "Sicilian Defense - Open (move 3)"
+      "weight": 145,
+      "name": "Sicilian - Dragon (move 3)"
+    },
+    {
+      "uci": "b1c3",
+      "weight": 120,
+      "name": "Sicilian - Closed (move 3)"
+    },
+    {
+      "uci": "c2c3",
+      "weight": 125,
+      "name": "Sicilian - Alapin (move 3)"
     }
   ],
   "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq -": [
     {
       "uci": "d7d6",
-      "weight": 140,
-      "name": "Sicilian Defense - Open (move 4)"
+      "weight": 145,
+      "name": "Sicilian - Dragon (move 4)"
     }
   ],
   "rnbqkbnr/pp2pppp/3p4/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq -": [
     {
       "uci": "d2d4",
-      "weight": 140,
-      "name": "Sicilian Defense - Open (move 5)"
+      "weight": 145,
+      "name": "Sicilian - Dragon (move 5)"
     }
   ],
   "rnbqkbnr/pp2pppp/3p4/2p5/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq -": [
     {
       "uci": "c5d4",
-      "weight": 140,
-      "name": "Sicilian Defense - Open (move 6)"
+      "weight": 145,
+      "name": "Sicilian - Dragon (move 6)"
     }
   ],
   "rnbqkbnr/pp2pppp/3p4/8/3pP3/5N2/PPP2PPP/RNBQKB1R w KQkq -": [
     {
       "uci": "f3d4",
-      "weight": 140,
-      "name": "Sicilian Defense - Open (move 7)"
+      "weight": 145,
+      "name": "Sicilian - Dragon (move 7)"
     }
   ],
   "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -": [
     {
       "uci": "d2d4",
       "weight": 130,
-      "name": "French Defense (move 3)"
+      "name": "French - Exchange (move 3)"
     }
   ],
   "rnbqkbnr/pppp1ppp/4p3/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq -": [
     {
       "uci": "d7d5",
       "weight": 130,
-      "name": "French Defense (move 4)"
+      "name": "French - Exchange (move 4)"
     }
   ],
   "rnbqkbnr/pp1ppppp/2p5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -": [
     {
       "uci": "d2d4",
       "weight": 130,
-      "name": "Caro-Kann Defense (move 3)"
+      "name": "Caro-Kann - Exchange (move 3)"
     }
   ],
   "rnbqkbnr/pp1ppppp/2p5/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq -": [
     {
       "uci": "d7d5",
       "weight": 130,
-      "name": "Caro-Kann Defense (move 4)"
+      "name": "Caro-Kann - Exchange (move 4)"
     }
   ],
   "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq -": [
     {
       "uci": "d7d5",
       "weight": 150,
-      "name": "Slav Defense (move 2)"
+      "name": "Slav - Exchange (move 2)"
     },
     {
       "uci": "g8f6",
-      "weight": 130,
-      "name": "Benoni Defense (move 2)"
+      "weight": 140,
+      "name": "Budapest Gambit (move 2)"
     },
     {
       "uci": "f7f5",
-      "weight": 100,
-      "name": "Dutch Defense (move 2)"
+      "weight": 110,
+      "name": "Dutch - Stonewall (move 2)"
+    },
+    {
+      "uci": "c7c5",
+      "weight": 95,
+      "name": "Old Benoni (move 2)"
     }
   ],
   "rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq -": [
     {
       "uci": "c2c4",
       "weight": 150,
-      "name": "Slav Defense (move 3)"
+      "name": "Slav - Exchange (move 3)"
     },
     {
       "uci": "g1f3",
-      "weight": 120,
+      "weight": 125,
       "name": "London System (move 3)"
     }
   ],
   "rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq -": [
     {
       "uci": "d5c4",
-      "weight": 120,
+      "weight": 130,
       "name": "Queen's Gambit Accepted (move 4)"
     },
     {
       "uci": "e7e6",
-      "weight": 140,
-      "name": "Queen's Gambit Declined (move 4)"
+      "weight": 145,
+      "name": "Semi-Slav Defense (move 4)"
     },
     {
       "uci": "c7c6",
-      "weight": 120,
-      "name": "Slav Defense (move 4)"
+      "weight": 130,
+      "name": "Slav - Exchange (move 4)"
     }
   ],
   "rnbqkb1r/pppppppp/5n2/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq -": [
     {
       "uci": "c2c4",
-      "weight": 130,
-      "name": "Benoni Defense (move 3)"
+      "weight": 140,
+      "name": "Budapest Gambit (move 3)"
+    },
+    {
+      "uci": "c1g5",
+      "weight": 105,
+      "name": "Trompowsky Attack (move 3)"
     }
   ],
   "rnbqkb1r/pppppppp/5n2/8/2PP4/8/PP2PPPP/RNBQKBNR b KQkq -": [
     {
       "uci": "g7g6",
-      "weight": 130,
-      "name": "Gr\u00fcnfeld Defense (move 4)"
+      "weight": 135,
+      "name": "Gr\u00fcnfeld - Exchange (move 4)"
     },
     {
       "uci": "e7e6",
-      "weight": 130,
-      "name": "Nimzo-Indian Defense (move 4)"
+      "weight": 140,
+      "name": "Catalan Opening (move 4)"
     },
     {
       "uci": "c7c5",
-      "weight": 100,
+      "weight": 110,
       "name": "Benoni Defense (move 4)"
+    },
+    {
+      "uci": "e7e5",
+      "weight": 95,
+      "name": "Budapest Gambit (move 4)"
     }
   ],
   "rnbqkb1r/pppppp1p/5np1/8/2PP4/8/PP2PPPP/RNBQKBNR w KQkq -": [
     {
       "uci": "b1c3",
-      "weight": 130,
-      "name": "Gr\u00fcnfeld Defense (move 5)"
+      "weight": 135,
+      "name": "Gr\u00fcnfeld - Exchange (move 5)"
     }
   ],
   "rnbqkb1r/pppppp1p/5np1/8/2PP4/2N5/PP2PPPP/R1BQKBNR b KQkq -": [
     {
       "uci": "f8g7",
-      "weight": 130,
-      "name": "King's Indian Defense (move 6)"
+      "weight": 135,
+      "name": "KID - S\u00e4misch (move 6)"
     },
     {
       "uci": "d7d5",
-      "weight": 120,
-      "name": "Gr\u00fcnfeld Defense (move 6)"
+      "weight": 130,
+      "name": "Gr\u00fcnfeld - Exchange (move 6)"
     }
   ],
   "rnbqkb1r/pppp1ppp/4pn2/8/2PP4/8/PP2PPPP/RNBQKBNR w KQkq -": [
     {
       "uci": "b1c3",
+      "weight": 140,
+      "name": "Nimzo-Indian - Classical (move 5)"
+    },
+    {
+      "uci": "g1f3",
       "weight": 130,
-      "name": "Nimzo-Indian Defense (move 5)"
+      "name": "Bogo-Indian Defense (move 5)"
+    },
+    {
+      "uci": "g2g3",
+      "weight": 125,
+      "name": "Catalan Opening (move 5)"
     }
   ],
   "rnbqkb1r/pppp1ppp/4pn2/8/2PP4/2N5/PP2PPPP/R1BQKBNR b KQkq -": [
     {
       "uci": "f8b4",
-      "weight": 130,
-      "name": "Nimzo-Indian Defense (move 6)"
+      "weight": 140,
+      "name": "Nimzo-Indian - Classical (move 6)"
     }
   ],
   "rnbqkbnr/pppppppp/8/8/2P5/8/PP1PPPPP/RNBQKBNR b KQkq -": [
     {
       "uci": "e7e5",
-      "weight": 120,
-      "name": "English Opening (move 2)"
+      "weight": 130,
+      "name": "English - Four Knights (move 2)"
+    },
+    {
+      "uci": "c7c5",
+      "weight": 130,
+      "name": "English - Symmetrical (move 2)"
+    },
+    {
+      "uci": "g8f6",
+      "weight": 125,
+      "name": "English - Anglo-Indian (move 2)"
     }
   ],
   "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R b KQkq -": [
@@ -292,57 +382,479 @@
   "rnbqkbnr/ppp1pppp/3p4/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -": [
     {
       "uci": "d2d4",
-      "weight": 100,
+      "weight": 110,
       "name": "Pirc Defense (move 3)"
     }
   ],
   "rnbqkbnr/ppp1pppp/3p4/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq -": [
     {
       "uci": "g8f6",
-      "weight": 100,
+      "weight": 110,
       "name": "Pirc Defense (move 4)"
     }
   ],
   "rnbqkb1r/ppp1pppp/3p1n2/8/3PP3/8/PPP2PPP/RNBQKBNR w KQkq -": [
     {
       "uci": "b1c3",
-      "weight": 100,
+      "weight": 110,
       "name": "Pirc Defense (move 5)"
     }
   ],
   "rnbqkb1r/ppp1pppp/3p1n2/8/3PP3/2N5/PPP2PPP/R1BQKBNR b KQkq -": [
     {
       "uci": "g7g6",
-      "weight": 100,
+      "weight": 110,
       "name": "Pirc Defense (move 6)"
     }
   ],
   "rnbqkbnr/ppp1pppp/8/3p4/3P4/5N2/PPP1PPPP/RNBQKB1R b KQkq -": [
     {
       "uci": "g8f6",
-      "weight": 120,
+      "weight": 125,
       "name": "London System (move 4)"
     }
   ],
   "rnbqkb1r/ppp1pppp/5n2/3p4/3P4/5N2/PPP1PPPP/RNBQKB1R w KQkq -": [
     {
       "uci": "c1f4",
-      "weight": 120,
+      "weight": 125,
       "name": "London System (move 5)"
+    },
+    {
+      "uci": "e2e3",
+      "weight": 110,
+      "name": "Colle System (move 5)"
+    },
+    {
+      "uci": "c1g5",
+      "weight": 110,
+      "name": "Torre Attack (move 5)"
     }
   ],
   "rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b KQkq -": [
     {
       "uci": "d7d5",
-      "weight": 110,
-      "name": "R\u00e9ti Opening (move 2)"
+      "weight": 120,
+      "name": "King's Indian Attack (move 2)"
+    },
+    {
+      "uci": "g8f6",
+      "weight": 115,
+      "name": "R\u00e9ti - KIA (move 2)"
     }
   ],
   "rnbqkbnr/ppp1pppp/8/3p4/8/5N2/PPPPPPPP/RNBQKB1R w KQkq -": [
     {
       "uci": "c2c4",
-      "weight": 110,
+      "weight": 120,
       "name": "R\u00e9ti Opening (move 3)"
+    },
+    {
+      "uci": "g2g3",
+      "weight": 105,
+      "name": "King's Indian Attack (move 3)"
+    }
+  ],
+  "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq -": [
+    {
+      "uci": "f8c5",
+      "weight": 140,
+      "name": "Giuoco Piano (move 6)"
+    },
+    {
+      "uci": "g8f6",
+      "weight": 130,
+      "name": "Two Knights Defense (move 6)"
+    }
+  ],
+  "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq -": [
+    {
+      "uci": "g8f6",
+      "weight": 140,
+      "name": "Ruy Lopez - Berlin Defense (move 6)"
+    },
+    {
+      "uci": "a7a6",
+      "weight": 145,
+      "name": "Ruy Lopez - Morphy Defense (move 6)"
+    }
+  ],
+  "r1bqkbnr/pppp1ppp/2n5/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq -": [
+    {
+      "uci": "e5d4",
+      "weight": 110,
+      "name": "Scotch Gambit (move 6)"
+    }
+  ],
+  "r1bqkbnr/pppp1ppp/2n5/8/3pP3/5N2/PPP2PPP/RNBQKB1R w KQkq -": [
+    {
+      "uci": "f1c4",
+      "weight": 110,
+      "name": "Scotch Gambit (move 7)"
+    }
+  ],
+  "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq -": [
+    {
+      "uci": "e5f4",
+      "weight": 100,
+      "name": "King's Gambit Accepted (move 4)"
+    }
+  ],
+  "rnbqkbnr/pp2pppp/3p4/8/3NP3/8/PPP2PPP/RNBQKB1R b KQkq -": [
+    {
+      "uci": "g8f6",
+      "weight": 145,
+      "name": "Sicilian - Dragon (move 8)"
+    }
+  ],
+  "rnbqkb1r/pp2pppp/3p1n2/8/3NP3/8/PPP2PPP/RNBQKB1R w KQkq -": [
+    {
+      "uci": "b1c3",
+      "weight": 145,
+      "name": "Sicilian - Dragon (move 9)"
+    }
+  ],
+  "rnbqkb1r/pp2pppp/3p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R b KQkq -": [
+    {
+      "uci": "a7a6",
+      "weight": 145,
+      "name": "Sicilian - Najdorf (move 10)"
+    },
+    {
+      "uci": "g7g6",
+      "weight": 140,
+      "name": "Sicilian - Dragon (move 10)"
+    }
+  ],
+  "rnbqkbnr/ppp2ppp/4p3/3p4/3PP3/8/PPP2PPP/RNBQKBNR w KQkq -": [
+    {
+      "uci": "e4e5",
+      "weight": 125,
+      "name": "French - Advance (move 5)"
+    },
+    {
+      "uci": "e4d5",
+      "weight": 120,
+      "name": "French - Exchange (move 5)"
+    }
+  ],
+  "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/8/PPP2PPP/RNBQKBNR w KQkq -": [
+    {
+      "uci": "e4e5",
+      "weight": 125,
+      "name": "Caro-Kann - Advance (move 5)"
+    },
+    {
+      "uci": "e4d5",
+      "weight": 120,
+      "name": "Caro-Kann - Exchange (move 5)"
+    }
+  ],
+  "rnbqkbnr/ppp2ppp/4p3/3p4/2PP4/8/PP2PPPP/RNBQKBNR w KQkq -": [
+    {
+      "uci": "b1c3",
+      "weight": 135,
+      "name": "Semi-Slav Defense (move 5)"
+    }
+  ],
+  "rnbqkbnr/ppp2ppp/4p3/3p4/2PP4/2N5/PP2PPPP/R1BQKBNR b KQkq -": [
+    {
+      "uci": "g8f6",
+      "weight": 135,
+      "name": "Semi-Slav Defense (move 6)"
+    }
+  ],
+  "rnbqkb1r/ppp2ppp/4pn2/3p4/2PP4/2N5/PP2PPPP/R1BQKBNR w KQkq -": [
+    {
+      "uci": "c1g5",
+      "weight": 135,
+      "name": "QGD - Tartakower (move 7)"
+    },
+    {
+      "uci": "g1f3",
+      "weight": 135,
+      "name": "Semi-Slav Defense (move 7)"
+    }
+  ],
+  "rnbqkb1r/ppp2ppp/4pn2/3p2B1/2PP4/2N5/PP2PPPP/R2QKBNR b KQkq -": [
+    {
+      "uci": "f8e7",
+      "weight": 135,
+      "name": "QGD - Tartakower (move 8)"
+    }
+  ],
+  "rnbqk2r/ppp1bppp/4pn2/3p2B1/2PP4/2N5/PP2PPPP/R2QKBNR w KQkq -": [
+    {
+      "uci": "e2e3",
+      "weight": 135,
+      "name": "QGD - Tartakower (move 9)"
+    }
+  ],
+  "rnbqk2r/ppp1bppp/4pn2/3p2B1/2PP4/2N1P3/PP3PPP/R2QKBNR b KQkq -": [
+    {
+      "uci": "h7h6",
+      "weight": 135,
+      "name": "QGD - Tartakower (move 10)"
+    }
+  ],
+  "rnbqkb1r/ppp2ppp/4pn2/3p4/2PP4/2N2N2/PP2PPPP/R1BQKB1R b KQkq -": [
+    {
+      "uci": "c7c6",
+      "weight": 135,
+      "name": "Semi-Slav Defense (move 8)"
+    }
+  ],
+  "rnbqk2r/ppppppbp/5np1/8/2PP4/2N5/PP2PPPP/R1BQKBNR w KQkq -": [
+    {
+      "uci": "e2e4",
+      "weight": 130,
+      "name": "KID - S\u00e4misch (move 7)"
+    }
+  ],
+  "rnbqk2r/ppppppbp/5np1/8/2PPP3/2N5/PP3PPP/R1BQKBNR b KQkq -": [
+    {
+      "uci": "d7d6",
+      "weight": 130,
+      "name": "KID - S\u00e4misch (move 8)"
+    }
+  ],
+  "rnbqk2r/ppp1ppbp/3p1np1/8/2PPP3/2N5/PP3PPP/R1BQKBNR w KQkq -": [
+    {
+      "uci": "g1f3",
+      "weight": 130,
+      "name": "KID - Classical (move 9)"
+    },
+    {
+      "uci": "f2f3",
+      "weight": 125,
+      "name": "KID - S\u00e4misch (move 9)"
+    }
+  ],
+  "rnbqk2r/ppp1ppbp/3p1np1/8/2PPP3/2N2N2/PP3PPP/R1BQKB1R b KQkq -": [
+    {
+      "uci": "e8g8",
+      "weight": 130,
+      "name": "KID - Classical (move 10)"
+    }
+  ],
+  "rnbqk2r/pppp1ppp/4pn2/8/1bPP4/2N5/PP2PPPP/R1BQKBNR w KQkq -": [
+    {
+      "uci": "d1c2",
+      "weight": 135,
+      "name": "Nimzo-Indian - Classical (move 7)"
+    }
+  ],
+  "rnbqkb1r/pppp1ppp/4pn2/8/2PP4/5N2/PP2PPPP/RNBQKB1R b KQkq -": [
+    {
+      "uci": "b7b6",
+      "weight": 130,
+      "name": "Queen's Indian Defense (move 6)"
+    },
+    {
+      "uci": "f8b4",
+      "weight": 120,
+      "name": "Bogo-Indian Defense (move 6)"
+    }
+  ],
+  "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -": [
+    {
+      "uci": "e4d5",
+      "weight": 105,
+      "name": "Scandinavian - Modern (move 3)"
+    }
+  ],
+  "rnbqkbnr/ppp1pppp/8/3P4/8/8/PPPP1PPP/RNBQKBNR b KQkq -": [
+    {
+      "uci": "g8f6",
+      "weight": 105,
+      "name": "Scandinavian - Modern (move 4)"
+    }
+  ],
+  "rnbqkb1r/pppppppp/5n2/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -": [
+    {
+      "uci": "e4e5",
+      "weight": 100,
+      "name": "Alekhine's - Four Pawns (move 3)"
+    }
+  ],
+  "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq -": [
+    {
+      "uci": "f6d5",
+      "weight": 100,
+      "name": "Alekhine's - Four Pawns (move 4)"
+    }
+  ],
+  "rnbqkb1r/pppppppp/8/3nP3/8/8/PPPP1PPP/RNBQKBNR w KQkq -": [
+    {
+      "uci": "d2d4",
+      "weight": 100,
+      "name": "Alekhine's - Four Pawns (move 5)"
+    }
+  ],
+  "rnbqkb1r/pppppppp/8/3nP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq -": [
+    {
+      "uci": "d7d6",
+      "weight": 100,
+      "name": "Alekhine's - Four Pawns (move 6)"
+    }
+  ],
+  "rnbqkb1r/ppp1pppp/3p4/3nP3/3P4/8/PPP2PPP/RNBQKBNR w KQkq -": [
+    {
+      "uci": "c2c4",
+      "weight": 100,
+      "name": "Alekhine's - Four Pawns (move 7)"
+    }
+  ],
+  "rnbqkbnr/pp2pppp/2p5/3p4/2PP4/8/PP2PPPP/RNBQKBNR w KQkq -": [
+    {
+      "uci": "c4d5",
+      "weight": 120,
+      "name": "Slav - Exchange (move 5)"
+    }
+  ],
+  "rnbqkb1r/ppp1pp1p/5np1/3p4/2PP4/2N5/PP2PPPP/R1BQKBNR w KQkq -": [
+    {
+      "uci": "c4d5",
+      "weight": 125,
+      "name": "Gr\u00fcnfeld - Exchange (move 7)"
+    }
+  ],
+  "rnbqkb1r/ppp1pp1p/5np1/3P4/3P4/2N5/PP2PPPP/R1BQKBNR b KQkq -": [
+    {
+      "uci": "f6d5",
+      "weight": 125,
+      "name": "Gr\u00fcnfeld - Exchange (move 8)"
+    }
+  ],
+  "rnbqkb1r/ppp1pp1p/6p1/3n4/3P4/2N5/PP2PPPP/R1BQKBNR w KQkq -": [
+    {
+      "uci": "e2e4",
+      "weight": 125,
+      "name": "Gr\u00fcnfeld - Exchange (move 9)"
+    }
+  ],
+  "rnbqkbnr/ppppp1pp/8/5p2/3P4/8/PPP1PPPP/RNBQKBNR w KQkq -": [
+    {
+      "uci": "g2g3",
+      "weight": 105,
+      "name": "Dutch - Leningrad (move 3)"
+    },
+    {
+      "uci": "c2c4",
+      "weight": 105,
+      "name": "Dutch - Stonewall (move 3)"
+    }
+  ],
+  "rnbqkbnr/ppppp1pp/8/5p2/3P4/6P1/PPP1PP1P/RNBQKBNR b KQkq -": [
+    {
+      "uci": "g8f6",
+      "weight": 105,
+      "name": "Dutch - Leningrad (move 4)"
+    }
+  ],
+  "rnbqkb1r/ppppp1pp/5n2/5p2/3P4/6P1/PPP1PP1P/RNBQKBNR w KQkq -": [
+    {
+      "uci": "f1g2",
+      "weight": 105,
+      "name": "Dutch - Leningrad (move 5)"
+    }
+  ],
+  "rnbqkb1r/ppppp1pp/5n2/5p2/3P4/6P1/PPP1PPBP/RNBQK1NR b KQkq -": [
+    {
+      "uci": "g7g6",
+      "weight": 105,
+      "name": "Dutch - Leningrad (move 6)"
+    }
+  ],
+  "rnbqkbnr/ppppp1pp/8/5p2/2PP4/8/PP2PPPP/RNBQKBNR b KQkq -": [
+    {
+      "uci": "g8f6",
+      "weight": 105,
+      "name": "Dutch - Stonewall (move 4)"
+    }
+  ],
+  "rnbqkb1r/ppppp1pp/5n2/5p2/2PP4/8/PP2PPPP/RNBQKBNR w KQkq -": [
+    {
+      "uci": "g2g3",
+      "weight": 105,
+      "name": "Dutch - Stonewall (move 5)"
+    }
+  ],
+  "rnbqkb1r/ppppp1pp/5n2/5p2/2PP4/6P1/PP2PP1P/RNBQKBNR b KQkq -": [
+    {
+      "uci": "e7e6",
+      "weight": 105,
+      "name": "Dutch - Stonewall (move 6)"
+    }
+  ],
+  "rnbqkb1r/pppp2pp/4pn2/5p2/2PP4/6P1/PP2PP1P/RNBQKBNR w KQkq -": [
+    {
+      "uci": "f1g2",
+      "weight": 105,
+      "name": "Dutch - Stonewall (move 7)"
+    }
+  ],
+  "rnbqkb1r/pppp2pp/4pn2/5p2/2PP4/6P1/PP2PPBP/RNBQK1NR b KQkq -": [
+    {
+      "uci": "d7d5",
+      "weight": 105,
+      "name": "Dutch - Stonewall (move 8)"
+    }
+  ],
+  "rnbqkbnr/pppp1ppp/8/4p3/2P5/8/PP1PPPPP/RNBQKBNR w KQkq -": [
+    {
+      "uci": "b1c3",
+      "weight": 120,
+      "name": "English - Four Knights (move 3)"
+    }
+  ],
+  "rnbqkbnr/pppp1ppp/8/4p3/2P5/2N5/PP1PPPPP/R1BQKBNR b KQkq -": [
+    {
+      "uci": "g8f6",
+      "weight": 120,
+      "name": "English - Four Knights (move 4)"
+    }
+  ],
+  "rnbqkb1r/pppp1ppp/5n2/4p3/2P5/2N5/PP1PPPPP/R1BQKBNR w KQkq -": [
+    {
+      "uci": "g1f3",
+      "weight": 120,
+      "name": "English - Four Knights (move 5)"
+    }
+  ],
+  "rnbqkb1r/pppp1ppp/5n2/4p3/2P5/2N2N2/PP1PPPPP/R1BQKB1R b KQkq -": [
+    {
+      "uci": "b8c6",
+      "weight": 120,
+      "name": "English - Four Knights (move 6)"
+    }
+  ],
+  "rnbqkb1r/pppppppp/5n2/8/8/5N2/PPPPPPPP/RNBQKB1R w KQkq -": [
+    {
+      "uci": "g2g3",
+      "weight": 115,
+      "name": "R\u00e9ti - KIA (move 3)"
+    }
+  ],
+  "rnbqkbnr/pppppppp/8/8/5P2/8/PPPPP1PP/RNBQKBNR b KQkq -": [
+    {
+      "uci": "e7e5",
+      "weight": 95,
+      "name": "Bird's - From's Gambit (move 2)"
+    }
+  ],
+  "rnbqkbnr/ppp1pppp/8/3p4/8/5NP1/PPPPPP1P/RNBQKB1R b KQkq -": [
+    {
+      "uci": "g8f6",
+      "weight": 105,
+      "name": "King's Indian Attack (move 4)"
+    }
+  ],
+  "rnbqkb1r/ppp1pppp/5n2/3p4/8/5NP1/PPPPPP1P/RNBQKB1R w KQkq -": [
+    {
+      "uci": "f1g2",
+      "weight": 105,
+      "name": "King's Indian Attack (move 5)"
     }
   ]
 }
