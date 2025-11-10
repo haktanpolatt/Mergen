@@ -83,3 +83,15 @@ lib.evaluate_fen.restype = ctypes.c_float
 def get_eval_from_c(fen: str) -> float:
     return lib.evaluate_fen(fen.encode())
 
+# get_search_info_from_c
+lib.get_search_info.argtypes = [ctypes.c_char_p, ctypes.c_int]
+lib.get_search_info.restype = ctypes.c_char_p
+
+def get_search_info_from_c(fen: str, depth: int = 4) -> str:
+    """
+    Get detailed search information including depth, evaluation, and principal variation.
+    Returns string in format: "depth score pv_move"
+    """
+    info = lib.get_search_info(fen.encode(), depth)
+    return info.decode()
+

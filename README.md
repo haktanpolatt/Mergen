@@ -10,10 +10,14 @@ In Turkish mythology, Mergen is known as the symbol of intelligence, wisdom, and
 Drawing inspiration from this legendary figure, we have developed a chess AI that bases its moves not only on power but on foresight, balance, and intuition.
 
 # 🔧 Features
-- ♟ Deep Move Prediction: Mergen evaluates dozens of possibilities with every move; it plays not just powerfully but strategically.
-- 🌀 Intelligence and Intuition: Unlike traditional engines, Mergen adapts its playing style, showing aggressive or defensive behavior depending on the situation.
-- 📚 Mythological Spirit, Modern Engineering: Named after the wise archer of the past, Mergen is built in Python with modern algorithms.
-- 🕰️ Evolving Intelligence: Learns from training data, recognizes openings, and remembers opponent strategies.
+- ♟ **Deep Move Prediction**: Mergen evaluates dozens of possibilities with every move using iterative deepening
+- 🌀 **Intelligence and Intuition**: Adapts its playing style with advanced algorithms like quiescence search and alpha-beta pruning
+- 📚 **Opening Book**: Plays 25+ established opening systems including Ruy Lopez, Sicilian Defense, and Queen's Gambit
+- 🎯 **Tactical Awareness**: Quiescence search prevents horizon effect and tactical blindness
+- ⚡ **Optimized Performance**: Transposition tables with Zobrist hashing, killer move heuristic, and move ordering
+- � **Search Enhancements**: Iterative deepening with Principal Variation (PV) tracking
+- 📖 **Pawn Promotion Choice**: Select promotion piece (queen, rook, bishop, knight)
+- 🕰️ **Time-Aware**: Tracks thinking time and provides search statistics
 
 ## 💻 How to Run Mergen?
 
@@ -90,8 +94,29 @@ cd Source/C
 gcc -O3 -shared -fPIC -o Engine.dylib Engine.c Board.c MoveGen.c Evaluate.c Minimax.c Move.c Rules.c Zobrist.c TT.c Ordering.c KillerMoves.c -Wno-stringop-overflow
 ```
 
-# 🎯 Why “Mergen”?
-Just like the mythological Mergen’s arrow, this AI makes every move on the chessboard with wisdom and precision. The name is more than just a reference—it symbolizes the very character of our AI.
+## 🆕 Recent Updates (November 2025)
+
+### Pawn Promotion
+- Players can now choose promotion piece (Q/R/B/N)
+- Engine generates all promotion variations
+
+### Engine Enhancements
+- **Iterative Deepening**: Progressive depth search for better move ordering
+- **Principal Variation Tracking**: Shows engine's intended continuation
+- **Search Information Display**: Real-time depth, evaluation, and PV
+
+### Opening Book
+- 25+ major opening systems
+- Instant book moves (no calculation needed)
+- Weighted move selection for variety
+- See `Documents/OpeningBook.md` for details
+
+### Documentation
+- **Bibliography**: Academic references for all algorithms (`Documents/Bibliography.md`)
+- Proper citations for minimax, alpha-beta, transposition tables, and more
+
+# 🎯 Why "Mergen"?
+Just like the mythological Mergen's arrow, this AI makes every move on the chessboard with wisdom and precision. The name is more than just a reference—it symbolizes the very character of our AI.
 
 # 📜 License
 Mergen is open-source and released under the MIT license. We welcome your contributions and improvements.

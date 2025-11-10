@@ -91,8 +91,15 @@ void make_move(Position* pos, const char* move) {
     board[from_rank][from_file] = (Piece){0};
 
     // Promote the pawn (if applicable)
+    // UCI format for promotion: e7e8q (5th character is promotion piece)
     if (moving.type == 'p' && (to_rank == 0 || to_rank == 7)) {
-        moving.type = 'q';  // Promote to queen (for now)
+        if (move[4] != '\0') {
+            // Promotion piece specified in move string
+            board[to_rank][to_file].type = move[4];
+        } else {
+            // Default to queen if no promotion piece specified
+            board[to_rank][to_file].type = 'q';
+        }
     }
 
     // En passant handling

@@ -31,10 +31,22 @@ int generate_pawn_moves(Position* pos, int rank, int file, char moves[][6], int 
     int dir = is_white ? -1 : 1;
     int start_rank = is_white ? 6 : 1;
     int next_rank = rank + dir;
+    int promotion_rank = is_white ? 0 : 7;
 
     // Go 1 square forward
     if (next_rank >= 0 && next_rank < 8 && board[next_rank][file].type == 0) {
-        square_to_uci(rank, file, next_rank, file, moves[move_index++]);
+        if (next_rank == promotion_rank) {
+            // Generate all promotion moves (queen, rook, bishop, knight)
+            char promo_pieces[] = {'q', 'r', 'b', 'n'};
+            for (int i = 0; i < 4; i++) {
+                square_to_uci(rank, file, next_rank, file, moves[move_index]);
+                moves[move_index][4] = promo_pieces[i];
+                moves[move_index][5] = '\0';
+                move_index++;
+            }
+        } else {
+            square_to_uci(rank, file, next_rank, file, moves[move_index++]);
+        }
 
         // Go 2 squares forward from starting position
         if (rank == start_rank && board[rank + dir * 2][file].type == 0) {
@@ -48,7 +60,18 @@ int generate_pawn_moves(Position* pos, int rank, int file, char moves[][6], int 
         if (new_file >= 0 && new_file < 8 && next_rank >= 0 && next_rank < 8) {
             Piece target = board[next_rank][new_file];
             if (target.type != 0 && target.is_white != is_white) {
-                square_to_uci(rank, file, next_rank, new_file, moves[move_index++]);
+                if (next_rank == promotion_rank) {
+                    // Generate all promotion captures
+                    char promo_pieces[] = {'q', 'r', 'b', 'n'};
+                    for (int i = 0; i < 4; i++) {
+                        square_to_uci(rank, file, next_rank, new_file, moves[move_index]);
+                        moves[move_index][4] = promo_pieces[i];
+                        moves[move_index][5] = '\0';
+                        move_index++;
+                    }
+                } else {
+                    square_to_uci(rank, file, next_rank, new_file, moves[move_index++]);
+                }
             }
         }
     }
