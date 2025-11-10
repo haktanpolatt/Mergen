@@ -6,6 +6,7 @@
 
 import chess
 import time
+from typing import Optional
 from rich import print
 from rich.console import Console
 from Source.Mergen import Mergen
@@ -36,10 +37,11 @@ def main():
     cpu_cores = get_cpu_cores()
     print(f"[cyan]Detected {cpu_cores} CPU cores[/cyan]")
     print("[cyan]Enable multi-threading?[/cyan]")
-    print("1. Single-threaded (1 core)")
-    print(f"2. Multi-threaded (2 cores)")
-    print(f"3. Multi-threaded (4 cores)")
-    print(f"4. Multi-threaded (all {cpu_cores} cores)")
+    print("1. Single-threaded (1 core) [recommended - multi-threading has a bug]")
+    print("2. Multi-threaded (2 cores) [experimental]")
+    print("3. Multi-threaded (4 cores) [experimental]")
+    print(f"4. Multi-threaded (8 cores) [experimental]")
+    print(f"[dim yellow]⚠️  Warning: Multi-threading currently has a performance bug at depth 4+[/dim yellow]")
     
     thread_choice = input("Enter choice (1-4, default=1): ").strip()
     
@@ -49,17 +51,17 @@ def main():
     if thread_choice == "2":
         num_threads = min(2, cpu_cores)
         use_multithreading = True
-        print(f"[green]Using {num_threads} threads[/green]")
+        print(f"[yellow]Using {num_threads} threads (experimental - may be slow)[/yellow]")
     elif thread_choice == "3":
         num_threads = min(4, cpu_cores)
         use_multithreading = True
-        print(f"[green]Using {num_threads} threads[/green]")
+        print(f"[yellow]Using {num_threads} threads (experimental - may be slow)[/yellow]")
     elif thread_choice == "4":
-        num_threads = cpu_cores
+        num_threads = min(8, cpu_cores)
         use_multithreading = True
-        print(f"[green]Using all {num_threads} threads[/green]")
-    else:
-        print("[green]Single-threaded mode[/green]")
+        print(f"[yellow]Using {num_threads} threads (experimental - may be slow)[/yellow]")
+    else:  # Default is 1 (single thread)
+        print("[green]Single-threaded mode (recommended)[/green]")
     
     # Time management setup
     print("\n[cyan]Select time control:[/cyan]")
@@ -68,12 +70,12 @@ def main():
     print("3. Rapid (10 min + 5 sec)")
     print("4. Classical (30 min)")
     print("5. Infinite (no time limit)")
-    print("6. Fixed depth (search to depth 5)")
+    print("6. Fixed depth (custom depth)")
     
     choice = input("Enter choice (1-6, default=6): ").strip()
     
     use_time_management = False
-    time_manager = None
+    time_manager: Optional[TimeManager] = None
     fixed_depth = 5
     
     if choice == "1":
@@ -96,7 +98,19 @@ def main():
         print("[green]Infinite mode: no time limit, depth 8[/green]")
         fixed_depth = 8
     else:
-        print("[green]Fixed depth mode: searching to depth 5[/green]")
+        print("[yellow]⚠️  Note: Higher depths increase search time exponentially[/yellow]")
+        print("   Depth 3: ~1 second")
+        print("   Depth 4: ~5-10 seconds")
+        print("   Depth 5: ~30-60 seconds or more")
+        depth_input = input("Enter search depth (2-6, default=4): ").strip()
+        
+        try:
+            fixed_depth = int(depth_input) if depth_input else 4
+            fixed_depth = max(2, min(6, fixed_depth))  # Clamp between 2-6
+        except ValueError:
+            fixed_depth = 4
+            
+        print(f"[green]Fixed depth mode: searching to depth {fixed_depth}[/green]")
 
     print(f"[blue]Initial Board:[/blue]")
     board = mergen.board
@@ -105,7 +119,7 @@ def main():
     if opening_book.get_statistics()['positions'] > 0:
         print(f"[green]Opening book loaded: {opening_book.get_statistics()['positions']} positions[/green]")
     
-    if use_time_management:
+    if use_time_management and time_manager:
         print(f"[yellow]Mergen has {time_manager.format_time(time_manager.total_time)} remaining[/yellow]")
 
     while not board.is_game_over():
@@ -188,7 +202,10 @@ def main():
                     pass
         
         # If not in book or book move failed, use engine
-        if use_time_management:
+        if use_time_management and time_manager:
+            # Type assertion for Pylance
+            assert time_manager is not None
+            
             # Calculate time allocation
             target_time, max_time = time_manager.get_time_for_move(board)
             

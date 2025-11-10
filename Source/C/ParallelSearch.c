@@ -43,12 +43,13 @@
 #include "Move.h"
 #include "Zobrist.h"
 #include "TT.h"
+#include "Ordering.h"
 
 // Global state
 static int g_num_threads = 1;
 static int g_initialized = 0;
 
-// Thread function that searches a subset of moves
+// Thread function that searches a subset of moves with alpha-beta pruning
 #ifdef _WIN32
 unsigned __stdcall search_thread(void* arg)
 #else
@@ -58,18 +59,41 @@ void* search_thread(void* arg)
     ThreadData* data = (ThreadData*)arg;
     
     float best_score = data->is_white ? -10000.0f : 10000.0f;
+    float alpha = data->alpha;
+    float beta = data->beta;
     char thread_best[6] = "";
     
-    // Each thread searches its assigned moves
+    // Each thread searches its assigned moves WITH alpha-beta pruning
     for (int i = data->start_index; i < data->end_index && i < data->num_moves; i++) {
         Position copy = data->position;
         make_move(&copy, data->moves[i]);
         
-        float score = minimax(&copy, data->depth - 1, -10000.0f, 10000.0f, !data->is_white);
+        float score = minimax(&copy, data->depth - 1, alpha, beta, !data->is_white);
         
-        if ((data->is_white && score > best_score) || (!data->is_white && score < best_score)) {
-            best_score = score;
-            strcpy(thread_best, data->moves[i]);
+        if (data->is_white) {
+            if (score > best_score) {
+                best_score = score;
+                strcpy(thread_best, data->moves[i]);
+            }
+            if (score > alpha) {
+                alpha = score;
+            }
+            // Early exit on beta cutoff
+            if (beta <= alpha) {
+                break;
+            }
+        } else {
+            if (score < best_score) {
+                best_score = score;
+                strcpy(thread_best, data->moves[i]);
+            }
+            if (score < beta) {
+                beta = score;
+            }
+            // Early exit on alpha cutoff
+            if (beta <= alpha) {
+                break;
+            }
         }
     }
     
@@ -139,6 +163,9 @@ const char* find_best_move_parallel(const char* fen, int depth, int num_threads)
         return best_move;
     }
     
+    // IMPORTANT: Sort moves ONCE before iterative deepening for better cutoffs
+    sort_moves(&pos, moves, num_moves, depth);
+    
     // Single threaded for depth 1 (too fast to parallelize)
     if (depth == 1 || g_num_threads == 1) {
         strcpy(best_move, moves[0]);
@@ -188,7 +215,11 @@ const char* find_best_move_parallel(const char* fen, int depth, int num_threads)
             pthread_t threads[MAX_THREADS];
         #endif
         
+        // Limit threads for diminishing returns (Lazy SMP doesn't scale well beyond 8)
         int actual_threads = g_num_threads;
+        if (actual_threads > 8) {
+            actual_threads = 8;
+        }
         if (actual_threads > num_moves) {
             actual_threads = num_moves;
         }
@@ -282,6 +313,9 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
         return result;
     }
     
+    // Sort moves ONCE for better cutoffs throughout iterative deepening
+    sort_moves(&pos, moves, num_moves, 1);
+    
     strcpy(best_move, moves[0]);
     int completed_depth = 0;
     
@@ -332,7 +366,11 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
             pthread_t threads[MAX_THREADS];
         #endif
         
+        // Limit threads for diminishing returns
         int actual_threads = g_num_threads;
+        if (actual_threads > 8) {
+            actual_threads = 8;
+        }
         if (actual_threads > num_moves) {
             actual_threads = num_moves;
         }
