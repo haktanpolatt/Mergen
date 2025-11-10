@@ -324,6 +324,58 @@ target_time = clamp(adjusted_time, min_time, max_time)
 
 ---
 
+## 13. Parallel Search (Lazy SMP)
+
+**Papers:**
+- Hyatt, R. M., Gower, A. R., & Nelson, H. L. (1990). "Cray Blitz." *Proceedings of the ACM/IEEE Conference on Supercomputing*, pp. 111-120.
+- Brockington, M. (1996). "A Taxonomy of Parallel Game-Tree Search Algorithms." *ICCA Journal*, 19(3), pp. 162-174.
+- Dailey, D. P., & Joerg, C. F. (1995). "A Parallel Algorithm for Chess." *MIT Laboratory for Computer Science*, Technical Report.
+
+**Description:**
+Lazy SMP (Shared Memory Parallel) is a simple yet effective parallel search algorithm where multiple threads search independently from the root position while sharing a common transposition table. Unlike more complex parallel algorithms that require careful work distribution and synchronization, Lazy SMP lets each thread do redundant work but benefits from the shared transposition table, which provides natural load balancing and communication between threads.
+
+**Key Advantages:**
+1. **Simple Implementation**: Minimal synchronization required
+2. **Good Scalability**: Near-linear speedup with 2-4 cores
+3. **Shared Learning**: Threads benefit from each other's TT entries
+4. **Natural Load Balancing**: Fast threads help slow threads via TT
+
+**Typical Performance:**
+- 2 threads: 1.7-1.9x speedup (~50-70 ELO)
+- 4 threads: 2.5-3.2x speedup (~100-130 ELO)
+- 8 threads: 3.5-4.5x speedup (~150-180 ELO)
+
+**Implementation in Mergen:**
+- Implemented in `Source/C/ParallelSearch.c` and `Source/C/ParallelSearch.h`
+- Uses Windows threads (`_beginthreadex`) on Windows
+- Uses POSIX threads (`pthread`) on Linux/macOS
+- Integrated with iterative deepening and time management
+- Exposed to Python through `Interface.py`
+- Supports 1-16 threads, auto-detects CPU cores
+
+**Usage:**
+```python
+# Get CPU cores
+cores = get_cpu_cores()
+
+# Parallel fixed-depth search
+move = find_best_move_parallel_from_c(fen, depth=6, num_threads=4)
+
+# Parallel time-limited search
+move, depth, time_ms = find_best_move_parallel_timed_from_c(
+    fen, max_time_ms=5000, num_threads=4
+)
+```
+
+**Technical Details:**
+- Moves are evenly distributed among threads
+- Each thread maintains independent alpha-beta bounds
+- Shallow depths (1-2) use single thread for efficiency
+- Results are merged after all threads complete
+- Compatible with all existing features (TT, killer moves, etc.)
+
+---
+
 ## Future Techniques to Implement
 
 The following techniques are commonly used in modern chess engines and are candidates for future implementation in Mergen:

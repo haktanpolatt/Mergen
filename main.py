@@ -17,7 +17,9 @@ from Source.Time import print_status
 from Source.Evaluation import evaluate_board
 from Source.OpeningBook import OpeningBook
 from Source.TimeManagement import TimeManager, TimeControl, detect_time_control
-from Interface import get_best_move_from_c, get_eval_from_c, get_search_info_from_c, find_best_move_timed_from_c
+from Interface import (get_best_move_from_c, get_eval_from_c, get_search_info_from_c, 
+                       find_best_move_timed_from_c, get_cpu_cores, 
+                       find_best_move_parallel_from_c, find_best_move_parallel_timed_from_c)
 
 console = Console()
 
@@ -30,8 +32,37 @@ def main():
     opening_book = OpeningBook()
     use_opening_book = True
     
+    # Multi-threading setup
+    cpu_cores = get_cpu_cores()
+    print(f"[cyan]Detected {cpu_cores} CPU cores[/cyan]")
+    print("[cyan]Enable multi-threading?[/cyan]")
+    print("1. Single-threaded (1 core)")
+    print(f"2. Multi-threaded (2 cores)")
+    print(f"3. Multi-threaded (4 cores)")
+    print(f"4. Multi-threaded (all {cpu_cores} cores)")
+    
+    thread_choice = input("Enter choice (1-4, default=1): ").strip()
+    
+    use_multithreading = False
+    num_threads = 1
+    
+    if thread_choice == "2":
+        num_threads = min(2, cpu_cores)
+        use_multithreading = True
+        print(f"[green]Using {num_threads} threads[/green]")
+    elif thread_choice == "3":
+        num_threads = min(4, cpu_cores)
+        use_multithreading = True
+        print(f"[green]Using {num_threads} threads[/green]")
+    elif thread_choice == "4":
+        num_threads = cpu_cores
+        use_multithreading = True
+        print(f"[green]Using all {num_threads} threads[/green]")
+    else:
+        print("[green]Single-threaded mode[/green]")
+    
     # Time management setup
-    print("[cyan]Select time control:[/cyan]")
+    print("\n[cyan]Select time control:[/cyan]")
     print("1. Bullet (1 min)")
     print("2. Blitz (3 min + 2 sec)")
     print("3. Rapid (10 min + 5 sec)")
@@ -152,10 +183,16 @@ def main():
         if use_time_management:
             # Calculate time allocation
             target_time, max_time = time_manager.get_time_for_move(board)
-            print(f"[yellow]Mergen is thinking... (target: {time_manager.format_time(target_time)}, max: {time_manager.format_time(max_time)})[/yellow]")
             
-            # Use time-limited search
-            move_uci, depth_reached, time_spent_ms = find_best_move_timed_from_c(board.fen(), max_time * 1000)
+            if use_multithreading:
+                print(f"[yellow]Mergen is thinking ({num_threads} threads)... (target: {time_manager.format_time(target_time)}, max: {time_manager.format_time(max_time)})[/yellow]")
+                # Use parallel time-limited search
+                move_uci, depth_reached, time_spent_ms = find_best_move_parallel_timed_from_c(board.fen(), max_time * 1000, num_threads)
+            else:
+                print(f"[yellow]Mergen is thinking... (target: {time_manager.format_time(target_time)}, max: {time_manager.format_time(max_time)})[/yellow]")
+                # Use single-threaded time-limited search
+                move_uci, depth_reached, time_spent_ms = find_best_move_timed_from_c(board.fen(), max_time * 1000)
+            
             mergen_move = chess.Move.from_uci(move_uci)
             elapsed = time_spent_ms / 1000.0
             
@@ -163,22 +200,39 @@ def main():
             time_manager.update_time(elapsed)
             black_time += elapsed
             
-            print(f"[dim]Depth: {depth_reached}, Time: {elapsed:.2f}s[/dim]")
+            if use_multithreading:
+                print(f"[dim]Depth: {depth_reached}, Time: {elapsed:.2f}s, Threads: {num_threads}[/dim]")
+            else:
+                print(f"[dim]Depth: {depth_reached}, Time: {elapsed:.2f}s[/dim]")
             print(f"[bold blue]Mergen played: {mergen_move}[/bold blue] [dim](remaining: {time_manager.format_time(time_manager.total_time)})[/dim]")
         else:
             # Fixed depth search
-            print(f"[yellow]Mergen is thinking...[/yellow]")
-            
-            # Get search information (depth, eval, PV)
-            search_info = get_search_info_from_c(board.fen(), depth=fixed_depth)
-            depth_str, eval_str, pv_move = search_info.split()
-            
-            mergen_move = chess.Move.from_uci(get_best_move_from_c(board.fen(), depth=fixed_depth))
-            elapsed = time.time() - start_time
-            black_time += elapsed
-            
-            print(f"[dim]Search depth: {depth_str}, Eval: {eval_str}, PV: {pv_move}[/dim]")
-            print(f"[bold blue]Mergen played: {mergen_move}[/bold blue] [dim](took {elapsed:.2f}s)[/dim]")
+            if use_multithreading:
+                print(f"[yellow]Mergen is thinking ({num_threads} threads)...[/yellow]")
+                # Use parallel fixed-depth search
+                move_uci = find_best_move_parallel_from_c(board.fen(), fixed_depth, num_threads)
+                mergen_move = chess.Move.from_uci(move_uci)
+                elapsed = time.time() - start_time
+                black_time += elapsed
+                
+                # Get search information for display
+                search_info = get_search_info_from_c(board.fen(), depth=fixed_depth)
+                depth_str, eval_str, pv_move = search_info.split()
+                
+                print(f"[dim]Search depth: {depth_str}, Eval: {eval_str}, PV: {pv_move}, Threads: {num_threads}[/dim]")
+                print(f"[bold blue]Mergen played: {mergen_move}[/bold blue] [dim](took {elapsed:.2f}s)[/dim]")
+            else:
+                print(f"[yellow]Mergen is thinking...[/yellow]")
+                # Get search information (depth, eval, PV)
+                search_info = get_search_info_from_c(board.fen(), depth=fixed_depth)
+                depth_str, eval_str, pv_move = search_info.split()
+                
+                mergen_move = chess.Move.from_uci(get_best_move_from_c(board.fen(), depth=fixed_depth))
+                elapsed = time.time() - start_time
+                black_time += elapsed
+                
+                print(f"[dim]Search depth: {depth_str}, Eval: {eval_str}, PV: {pv_move}[/dim]")
+                print(f"[bold blue]Mergen played: {mergen_move}[/bold blue] [dim](took {elapsed:.2f}s)[/dim]")
         
         board.push(mergen_move)
         print_board_rich(board)

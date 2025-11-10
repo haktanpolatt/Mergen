@@ -6,7 +6,7 @@
 ###############################
 */
 
-// gcc -O3 -shared -o Engine.dll Engine.c Board.c MoveGen.c Evaluate.c Minimax.c Move.c Rules.c Zobrist.c TT.c Ordering.c KillerMoves.c -Wno-stringop-overflow
+// gcc -O3 -shared -o Engine.dll Engine.c Board.c MoveGen.c Evaluate.c Minimax.c Move.c Rules.c Zobrist.c TT.c Ordering.c KillerMoves.c ParallelSearch.c -Wno-stringop-overflow
 
 #include <string.h>
 #include <stdio.h>
@@ -19,6 +19,7 @@
 #include "Zobrist.h"
 #include "TT.h"
 #include "Ordering.h"
+#include "ParallelSearch.h"
 
 // FIND BEST MOVE WITH ITERATIVE DEEPENING
 // This function finds the best move for the given position in FEN format using iterative deepening.
@@ -261,6 +262,23 @@ const char* find_best_move_timed(const char* fen, float max_time_ms) {
     return result;
 }
 
+// GET CPU CORE COUNT
+// Returns the number of available CPU cores
+int get_cpu_cores(void) {
+    return get_cpu_core_count();
+}
+
+// FIND BEST MOVE WITH PARALLEL SEARCH
+// Uses multiple threads to speed up search
+const char* find_best_move_parallel_from_fen(const char* fen, int depth, int num_threads) {
+    return find_best_move_parallel(fen, depth, num_threads);
+}
+
+// FIND BEST MOVE WITH PARALLEL SEARCH AND TIME LIMIT
+// Uses multiple threads with time management
+const char* find_best_move_parallel_timed_from_fen(const char* fen, float max_time_ms, int num_threads) {
+    return find_best_move_parallel_timed(fen, max_time_ms, num_threads);
+}
 
 
 
