@@ -44,6 +44,13 @@ const char* find_best_move_from_fen(const char* fen, int depth) {
     char moves[256][6];
     int num_moves = generate_legal_moves(&pos, is_white, moves);
 
+    // Check if there are any legal moves
+    if (num_moves == 0) {
+        // No legal moves - checkmate or stalemate
+        strcpy(best_move, "0000");
+        return best_move;
+    }
+
     // Initialize best move
     strcpy(best_move, moves[0]);
 
@@ -182,7 +189,8 @@ const char* find_best_move_timed(const char* fen, float max_time_ms) {
     int num_moves = generate_legal_moves(&pos, is_white, moves);
 
     if (num_moves == 0) {
-        snprintf(result, sizeof(result), "%s 0 0.0", moves[0]);
+        // No legal moves - checkmate or stalemate
+        snprintf(result, sizeof(result), "0000 0 0.0");
         return result;
     }
 

@@ -25,7 +25,7 @@ void parse_fen(const char* fen, Position* pos) {
             file += c - '0';
         } else {
             Piece p;
-            p.is_white = isupper(c);
+            p.is_white = isupper(c) ? 1 : 0;  // Convert to boolean: 1 or 0
             p.type = tolower(c);
             pos->board[rank][file++] = p;
         }
@@ -77,7 +77,7 @@ void fen_to_board(const char* fen, Position* pos) {
             file += c - '0';
         } else {
             Piece p;
-            p.is_white = isupper(c);
+            p.is_white = isupper(c) ? 1 : 0;  // Convert to boolean: 1 or 0
             p.type = tolower(c);
             pos->board[rank][file++] = p;
         }

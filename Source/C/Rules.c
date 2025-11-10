@@ -7,6 +7,7 @@
 */
 
 #include <string.h>
+#include <stdio.h>
 #include "Rules.h"
 #include "MoveGen.h"
 #include "Rules.h"
@@ -43,18 +44,42 @@ int is_in_check(Position* pos, int is_white) {
         }
     }
 
-    if (king_rank == -1) return 0;  // If king not found, return false
+    if (king_rank == -1) {
+        #ifdef DEBUG_MOVES
+        printf("DEBUG is_in_check: King not found for %s!\n", is_white ? "white" : "black");
+        #endif
+        return 0;  // If king not found, return false
+    }
+
+    #ifdef DEBUG_MOVES
+    printf("DEBUG is_in_check: Checking if %s king at %c%c is in check\n", 
+           is_white ? "white" : "black",
+           'a' + king_file,
+           '8' - king_rank);
+    #endif
 
     char temp_moves[256][6];
     int count = generate_pseudo_legal_moves(pos, !is_white, temp_moves);
+
+    #ifdef DEBUG_MOVES
+    printf("DEBUG is_in_check: Opponent (%s) has %d pseudo-legal moves\n", 
+           is_white ? "black" : "white", count);
+    #endif
 
     for (int i = 0; i < count; i++) {
         int to_rank = '8' - temp_moves[i][3];
         int to_file = temp_moves[i][2] - 'a';
         if (to_rank == king_rank && to_file == king_file) {
+            #ifdef DEBUG_MOVES
+            printf("DEBUG is_in_check: YES! Move %s attacks the king\n", temp_moves[i]);
+            #endif
             return 1;  // King is attacked
         }
     }
+
+    #ifdef DEBUG_MOVES
+    printf("DEBUG is_in_check: NO - king is safe\n");
+    #endif
 
     return 0;
 }

@@ -109,6 +109,10 @@ def main():
         print(f"[yellow]Mergen has {time_manager.format_time(time_manager.total_time)} remaining[/yellow]")
 
     while not board.is_game_over():
+        # Check if player is in check at the start of their turn
+        if board.is_check():
+            print("[bold red]⚠️  You are in CHECK! You must move your king to safety or block the attack![/bold red]")
+        
         try:
             start_time = time.time()
             human_move_str = input("Your move (in UCI format, e.g. e2e4 or e7e8q for promotion): ")
@@ -145,6 +149,10 @@ def main():
             white_score = max(score, 0)
             black_score = -min(score, 0)
             print_status(white_score, black_score, white_time, black_time)
+            
+            # Check if opponent is in check
+            if board.is_check():
+                print("[bold red]⚠️  CHECK! Mergen's king is under attack![/bold red]")
         else:
             console.print("Illegal move, please try again.", style="bold red")
             continue
@@ -241,6 +249,10 @@ def main():
         white_score = max(score, 0)
         black_score = -min(score, 0)
         print_status(white_score, black_score, white_time, black_time)
+        
+        # Check if player is in check
+        if board.is_check():
+            print("[bold red]⚠️  CHECK! Your king is under attack![/bold red]")
 
         if check_game_over(board):
             break

@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "MoveGen.h"
 #include "Rules.h"
 #include "Move.h"
@@ -265,11 +266,29 @@ int generate_king_moves(Position* pos, int rank, int file, char moves[][6], int 
 int generate_pseudo_legal_moves(Position* pos, int is_white, char moves[][6]) {
     Piece (*board)[8] = pos->board;
     int move_index = 0;
+    
+    #ifdef DEBUG_MOVES
+    int piece_count = 0;
+    printf("DEBUG generate_pseudo_legal_moves: Looking for %s pieces\n", is_white ? "white" : "black");
+    #endif
 
     for (int rank = 0; rank < 8; rank++) {
         for (int file = 0; file < 8; file++) {
             Piece p = board[rank][file];
+            
+            #ifdef DEBUG_MOVES
+            if (p.type != 0) {
+                printf("DEBUG: Found piece %c at %c%d, is_white=%d (looking for is_white=%d)\n", 
+                       p.type, 'a' + file, 8 - rank, p.is_white, is_white);
+            }
+            #endif
+            
             if (p.type == 0 || p.is_white != is_white) continue;
+            
+            #ifdef DEBUG_MOVES
+            piece_count++;
+            printf("DEBUG: Generating moves for %c at %c%d\n", p.type, 'a' + file, 8 - rank);
+            #endif
             
             switch (p.type) {
                 case 'p': move_index = generate_pawn_moves(pos, rank, file, moves, move_index); break;
@@ -281,6 +300,10 @@ int generate_pseudo_legal_moves(Position* pos, int is_white, char moves[][6]) {
             }
         }
     }
+    
+    #ifdef DEBUG_MOVES
+    printf("DEBUG generate_pseudo_legal_moves: Generated %d moves from %d pieces\n", move_index, piece_count);
+    #endif
 
     return move_index;
 }
@@ -290,14 +313,74 @@ int generate_legal_moves(Position* pos, int is_white, char moves[][6]) {
     int temp_index = generate_pseudo_legal_moves(pos, is_white, temp);
     int move_index = 0;
 
+    // Check if currently in check (important for castling rules)
+    int currently_in_check = is_in_check(pos, is_white);
+    
+    // DEBUG
+    #ifdef DEBUG_MOVES
+    printf("DEBUG: Generating legal moves for %s\n", is_white ? "white" : "black");
+    printf("DEBUG: Currently in check? %d\n", currently_in_check);
+    printf("DEBUG: Pseudo-legal moves: %d\n", temp_index);
+    #endif
+
     for (int i = 0; i < temp_index; i++) {
+        // Check if this is a castling move
+        int from_file = temp[i][0] - 'a';
+        int from_rank = '8' - temp[i][1];
+        int to_file = temp[i][2] - 'a';
+        int to_rank = '8' - temp[i][3];
+        
+        Piece moving = pos->board[from_rank][from_file];
+        int is_castling = (moving.type == 'k' && abs(to_file - from_file) == 2);
+        
+        #ifdef DEBUG_MOVES
+        printf("DEBUG: Checking move %s (castling=%d)\n", temp[i], is_castling);
+        #endif
+        
+        // Castling is illegal if king is currently in check
+        if (is_castling && currently_in_check) {
+            #ifdef DEBUG_MOVES
+            printf("DEBUG: Rejected %s - can't castle while in check\n", temp[i]);
+            #endif
+            continue;  // Skip this move
+        }
+        
+        // For castling, also check that king doesn't pass through check
+        if (is_castling) {
+            int intermediate_file = (from_file + to_file) / 2;
+            
+            // Create position with king on intermediate square
+            Position temp_pos = *pos;
+            temp_pos.board[from_rank][from_file] = (Piece){0};
+            temp_pos.board[to_rank][intermediate_file] = moving;
+            
+            if (is_in_check(&temp_pos, is_white)) {
+                #ifdef DEBUG_MOVES
+                printf("DEBUG: Rejected %s - passes through check\n", temp[i]);
+                #endif
+                continue;  // King passes through check, illegal
+            }
+        }
+        
+        // Make the move and check if it leaves/puts king in check
         Position copy = *pos;
         make_move(&copy, temp[i]);
 
         if (!is_in_check(&copy, is_white)) {
             strcpy(moves[move_index++], temp[i]);
+            #ifdef DEBUG_MOVES
+            printf("DEBUG: Accepted %s as legal\n", temp[i]);
+            #endif
+        } else {
+            #ifdef DEBUG_MOVES
+            printf("DEBUG: Rejected %s - leaves king in check\n", temp[i]);
+            #endif
         }
     }
+    
+    #ifdef DEBUG_MOVES
+    printf("DEBUG: Final legal moves: %d\n", move_index);
+    #endif
 
     return move_index;
 }
