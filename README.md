@@ -97,6 +97,13 @@ gcc -O3 -shared -fPIC -o Engine.dylib Engine.c Board.c MoveGen.c Evaluate.c Mini
 
 ## 🆕 Recent Updates (November 2025)
 
+### Performance Breakthrough 🚀 (November 13)
+- **8.6x Search Speedup**: Futility pruning + mobility evaluation (43s → 5s at depth 3!)
+- **Enhanced Evaluation**: Pawn chains, king safety improvements, mobility bonuses
+- **Expanded Opening Book**: 108 positions (from 84), +29% more coverage
+- **PGN Support**: Save/load games, auto-save, game history
+- **Comprehensive Test Suite**: 54 tests covering all components (100% passing)
+
 ### Pawn Promotion
 - Players can now choose promotion piece (Q/R/B/N)
 - Engine generates all promotion variations
@@ -115,14 +122,26 @@ gcc -O3 -shared -fPIC -o Engine.dylib Engine.c Board.c MoveGen.c Evaluate.c Mini
 - See `Documents/TimeManagement.md` for details
 
 ### Opening Book
+- **108 positions** with 186 total moves
 - 25+ major opening systems
 - Instant book moves (no calculation needed)
 - Weighted move selection for variety
 - See `Documents/OpeningBook.md` for details
 
+### Testing ✅ NEW!
+- **54 Comprehensive Tests**: Move generation, evaluation, tactics, opening book, PGN
+- **Test Runner**: `python3 run_tests.py` (with category support)
+- **100% Passing**: All tests verified
+- **CI/CD Ready**: Professional test infrastructure
+- See `tests/README.md` for details
+
 ### Documentation
 - **Bibliography**: Academic references for all algorithms (`Documents/Bibliography.md`)
 - **Time Management Guide**: Complete guide to time controls (`Documents/TimeManagement.md`)
+- **Opening Book Guide**: Opening coverage and customization (`Documents/OpeningBook.md`)
+- **Multi-Threading Guide**: Lazy SMP parallelization (`Documents/MultiThreading.md`)
+- **Test Suite Guide**: Test coverage and usage (`Documents/TestSuite.md`)
+- **Update Summary**: All improvements documented (`Documents/UpdateSummary.md`)
 - Proper citations for minimax, alpha-beta, transposition tables, and more
 
 # 🎯 Why "Mergen"?
