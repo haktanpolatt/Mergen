@@ -54,7 +54,7 @@ static float quiescence(Position* pos, float alpha, float beta, int maximizingPl
     return maximizingPlayer ? alpha : beta;
 }
 
-// MINIMAX + TT + QUIESCENCE + LATE MOVE REDUCTIONS
+// MINIMAX + TT + QUIESCENCE + LATE MOVE REDUCTIONS + FUTILITY PRUNING
 float minimax(Position* pos, int depth, float alpha, float beta, int maximizingPlayer) {
     uint64_t hash = compute_zobrist_hash(pos);
 
@@ -67,6 +67,27 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
         float eval = quiescence(pos, alpha, beta, maximizingPlayer, depth);
         tt_store(hash, eval, depth);
         return eval;
+    }
+
+    // FUTILITY PRUNING: Check if static eval is hopeless
+    // Only apply at low depths (1-2) with sufficient margin
+    float static_eval = -1.0f; // Invalid value
+    int do_futility_pruning = 0;
+    float futility_margin = 0.0f;
+    
+    if (depth <= 2) {
+        static_eval = evaluate_board(pos);
+        futility_margin = (depth == 1) ? 2.0f : 4.0f; // 2 pawns at depth 1, 4 at depth 2
+        
+        if (maximizingPlayer) {
+            if (static_eval + futility_margin <= alpha) {
+                do_futility_pruning = 1;
+            }
+        } else {
+            if (static_eval - futility_margin >= beta) {
+                do_futility_pruning = 1;
+            }
+        }
     }
 
     char moves[256][6];
@@ -83,17 +104,24 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
         float max_eval = -10000.0f;
         for (int i = 0; i < num_moves; i++) {
             Position copy = *pos; // Copy of stack
+            
+            // Check if this is a capture or tactical move
+            int to_file = moves[i][2] - 'a';
+            int to_rank = '8' - moves[i][3];
+            Piece victim = copy.board[to_rank][to_file];
+            int is_capture = (victim.type != 0);
+            
+            // FUTILITY PRUNING: Skip quiet moves when position is hopeless
+            if (do_futility_pruning && !is_capture) {
+                continue; // Skip this quiet move
+            }
+            
             make_move(&copy, moves[i]);
 
             // LATE MOVE REDUCTIONS (LMR):
             // After first 4 moves at depth>=3, reduce depth for quiet moves
             int search_depth = depth - 1;
             int needs_full_search = 0;
-            
-            int to_file = moves[i][2] - 'a';
-            int to_rank = '8' - moves[i][3];
-            Piece victim = copy.board[to_rank][to_file];
-            int is_capture = (victim.type != 0);
             
             if (i >= 4 && depth >= 3 && !is_capture) {
                 // Reduce depth by 1 for late quiet moves
@@ -124,16 +152,23 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
         float min_eval = 10000.0f;
         for (int i = 0; i < num_moves; i++) {
             Position copy = *pos;
+            
+            // Check if this is a capture or tactical move
+            int to_file = moves[i][2] - 'a';
+            int to_rank = '8' - moves[i][3];
+            Piece victim = copy.board[to_rank][to_file];
+            int is_capture = (victim.type != 0);
+            
+            // FUTILITY PRUNING: Skip quiet moves when position is hopeless
+            if (do_futility_pruning && !is_capture) {
+                continue; // Skip this quiet move
+            }
+            
             make_move(&copy, moves[i]);
 
             // LATE MOVE REDUCTIONS (LMR) for minimizing player
             int search_depth = depth - 1;
             int needs_full_search = 0;
-            
-            int to_file = moves[i][2] - 'a';
-            int to_rank = '8' - moves[i][3];
-            Piece victim = copy.board[to_rank][to_file];
-            int is_capture = (victim.type != 0);
             
             if (i >= 4 && depth >= 3 && !is_capture) {
                 search_depth = depth - 2;
