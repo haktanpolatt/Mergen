@@ -12,7 +12,7 @@ from rich.console import Console
 from Source.Mergen import Mergen
 from Source.CheckGame import check_game_over
 from Source.Search import find_best_move
-from Source.Notation import save_game_log
+from Source.Notation import save_game_log, save_game_pgn, list_saved_games
 from Source.Board import print_board_rich
 from Source.Time import print_status
 from Source.Evaluation import evaluate_board
@@ -29,13 +29,40 @@ def main():
     white_time = 0.0
     black_time = 0.0
     
+    # Option to load saved game
+    print("[cyan]Load a saved game?[/cyan]")
+    print("1. Start new game")
+    print("2. Load from PGN file")
+    print("3. View saved games")
+    
+    load_choice = input("Enter choice (1-3, default=1): ").strip()
+    
+    if load_choice == "2":
+        filename = input("Enter PGN filename (in Records/): ").strip()
+        from Source.Notation import load_game_pgn
+        loaded_board = load_game_pgn(filename)
+        if loaded_board:
+            mergen.board = loaded_board
+            print(f"[green]✓ Loaded game from {filename}[/green]")
+        else:
+            print("[yellow]Failed to load, starting new game[/yellow]")
+    elif load_choice == "3":
+        games = list_saved_games()
+        if games:
+            print(f"\n[cyan]Found {len(games)} saved game(s):[/cyan]")
+            for i, game in enumerate(games[:10], 1):
+                print(f"{i}. {game['filename']}: {game['white']} vs {game['black']} - {game['result']} ({game['date']})")
+            print("\nStarting new game...")
+        else:
+            print("[yellow]No saved games found[/yellow]")
+    
     # Load opening book
     opening_book = OpeningBook()
     use_opening_book = True
     
     # Multi-threading setup
     cpu_cores = get_cpu_cores()
-    print(f"[cyan]Detected {cpu_cores} CPU cores[/cyan]")
+    print(f"\n[cyan]Detected {cpu_cores} CPU cores[/cyan]")
     print("[cyan]Enable multi-threading?[/cyan]")
     print("1. Single-threaded (1 core) [recommended - multi-threading has a bug]")
     print("2. Multi-threaded (2 cores) [experimental]")
@@ -274,7 +301,25 @@ def main():
         if check_game_over(board):
             break
 
-    save_game_log(board, maximizing_player=False, depth=5)
+    # Save game in both formats
+    save_game_log(board, maximizing_player=False, depth=fixed_depth if not use_time_management else 5)
+    
+    # Save in standard PGN format
+    if use_time_management and time_manager:
+        time_control_str = f"{int(time_manager.total_time)}s"
+    else:
+        time_control_str = "Infinite"
+    
+    pgn_file = save_game_pgn(
+        board,
+        white_player="Human",
+        black_player="Mergen Chess Engine",
+        event="Human vs Computer",
+        site="Local",
+        depth=fixed_depth if not use_time_management else 5,
+        time_control=time_control_str
+    )
+    print(f"\n[green]✓ Game saved to {pgn_file}[/green]")
 
 if __name__ == "__main__":
     main()
