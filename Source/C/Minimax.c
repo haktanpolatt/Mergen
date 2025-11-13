@@ -54,7 +54,7 @@ static float quiescence(Position* pos, float alpha, float beta, int maximizingPl
     return maximizingPlayer ? alpha : beta;
 }
 
-// MINIMAX + TT + QUIESCENCE
+// MINIMAX + TT + QUIESCENCE + LATE MOVE REDUCTIONS
 float minimax(Position* pos, int depth, float alpha, float beta, int maximizingPlayer) {
     uint64_t hash = compute_zobrist_hash(pos);
 
@@ -85,16 +85,33 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
             Position copy = *pos; // Copy of stack
             make_move(&copy, moves[i]);
 
-            float eval = minimax(&copy, depth - 1, alpha, beta, 0);
+            // LATE MOVE REDUCTIONS (LMR):
+            // After first 4 moves at depth>=3, reduce depth for quiet moves
+            int search_depth = depth - 1;
+            int needs_full_search = 0;
+            
+            int to_file = moves[i][2] - 'a';
+            int to_rank = '8' - moves[i][3];
+            Piece victim = copy.board[to_rank][to_file];
+            int is_capture = (victim.type != 0);
+            
+            if (i >= 4 && depth >= 3 && !is_capture) {
+                // Reduce depth by 1 for late quiet moves
+                search_depth = depth - 2;
+                needs_full_search = 1;
+            }
+            
+            float eval = minimax(&copy, search_depth, alpha, beta, 0);
+            
+            // If LMR search raised alpha, re-search at full depth
+            if (needs_full_search && eval > alpha) {
+                eval = minimax(&copy, depth - 1, alpha, beta, 0);
+            }
 
             if (eval > max_eval) max_eval = eval;
             if (eval > alpha) alpha = eval;
             if (beta <= alpha) { // Beta cut-off
-                int to_file = moves[i][2] - 'a';
-                int to_rank = '8' - moves[i][3];
-                Piece victim = copy.board[to_rank][to_file];
-                
-                if (victim.type == 0) { // Quiet move
+                if (!is_capture) { // Quiet move
                     update_history(moves[i], depth);
                     add_killer_move(depth, moves[i]);
                 }
@@ -109,16 +126,31 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
             Position copy = *pos;
             make_move(&copy, moves[i]);
 
-            float eval = minimax(&copy, depth - 1, alpha, beta, 1);
+            // LATE MOVE REDUCTIONS (LMR) for minimizing player
+            int search_depth = depth - 1;
+            int needs_full_search = 0;
+            
+            int to_file = moves[i][2] - 'a';
+            int to_rank = '8' - moves[i][3];
+            Piece victim = copy.board[to_rank][to_file];
+            int is_capture = (victim.type != 0);
+            
+            if (i >= 4 && depth >= 3 && !is_capture) {
+                search_depth = depth - 2;
+                needs_full_search = 1;
+            }
+            
+            float eval = minimax(&copy, search_depth, alpha, beta, 1);
+            
+            // If LMR search lowered beta, re-search at full depth
+            if (needs_full_search && eval < beta) {
+                eval = minimax(&copy, depth - 1, alpha, beta, 1);
+            }
 
             if (eval < min_eval) min_eval = eval;
             if (eval < beta) beta = eval;
             if (beta <= alpha) { // Alpha cut-off
-                int to_file = moves[i][2] - 'a';
-                int to_rank = '8' - moves[i][3];
-                Piece victim = copy.board[to_rank][to_file];
-                
-                if (victim.type == 0) { // Quiet move
+                if (!is_capture) { // Quiet move
                     update_history(moves[i], depth);
                     add_killer_move(depth, moves[i]);
                 }
