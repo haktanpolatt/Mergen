@@ -70,18 +70,17 @@ float evaluate_pawn_structure(Position* pos) {
             int forward = is_white ? -1 : 1;
             float modifier = is_white ? 1.0f : -1.0f;
 
-            // Doubled pawn
+            // Doubled pawn - penalty for stacked pawns on same file
             int count = is_white ? white_pawn_files[file] : black_pawn_files[file];
-            if (count > 1) score += modifier * -0.2f;
+            if (count > 1) score += modifier * -0.3f; // Increased penalty
 
-            // Isolated pawn
+            // Isolated pawn - no friendly pawns on adjacent files
             int left = file > 0     ? (is_white ? white_pawn_files[file - 1] : black_pawn_files[file - 1]) : 0;
             int right = file < 7    ? (is_white ? white_pawn_files[file + 1] : black_pawn_files[file + 1]) : 0;
             if (left == 0 && right == 0)
-                score += modifier * -0.25f;
+                score += modifier * -0.4f; // Increased penalty
 
-            // Passed pawn
-            // A passed pawn is one that has no opposing pawns blocking its path to promotion
+            // Passed pawn - no opposing pawns blocking path to promotion
             int passed = 1;
             for (int r = rank + forward; r >= 0 && r < 8; r += forward) {
                 for (int f = file - 1; f <= file + 1; f++) {
@@ -93,7 +92,35 @@ float evaluate_pawn_structure(Position* pos) {
                     }
                 }
             }
-            if (passed) score += modifier * 0.3f;
+            if (passed) {
+                // Bonus increases as pawn advances toward promotion
+                int advancement = is_white ? (7 - rank) : rank;
+                float bonus = 0.3f + (advancement * 0.1f); // 0.3 to 1.0
+                score += modifier * bonus;
+            }
+
+            // Pawn chain - bonus for pawns protected by other pawns
+            // A pawn is part of a chain if it's protected by a friendly pawn diagonally behind
+            int back_rank = rank - forward; // Opposite direction of forward
+            if (back_rank >= 0 && back_rank < 8) {
+                int chain = 0;
+                // Check both diagonals behind
+                if (file > 0) {
+                    Piece left_back = board[back_rank][file - 1];
+                    if (left_back.type == 'p' && left_back.is_white == is_white) {
+                        chain = 1;
+                    }
+                }
+                if (file < 7) {
+                    Piece right_back = board[back_rank][file + 1];
+                    if (right_back.type == 'p' && right_back.is_white == is_white) {
+                        chain = 1;
+                    }
+                }
+                if (chain) {
+                    score += modifier * 0.2f; // Bonus for being in a pawn chain
+                }
+            }
         }
     }
 
