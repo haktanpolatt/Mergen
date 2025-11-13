@@ -5,7 +5,82 @@
 Source/C/Engine.dll
 Source/C/Engine.so
 Source/C/Engine.dylib
+Source/C/*.o
+Source/C/*.obj
 
 # Python cache files
 __pycache__/
-Source/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*/__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyCharm
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Python testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.old
+
+# Test records (keep games.md template, ignore actual game files)
+Records/*.pgn
+Records/*.fen
+!Records/games.md
+
+# Debug/test files (exclude temporary test scripts)
+test_*.py
+debug_*.py
+!tests/test_*.py
