@@ -54,7 +54,7 @@ static float quiescence(Position* pos, float alpha, float beta, int maximizingPl
     return maximizingPlayer ? alpha : beta;
 }
 
-// MINIMAX + TT + QUIESCENCE + NULL MOVE PRUNING
+// MINIMAX + TT + QUIESCENCE
 float minimax(Position* pos, int depth, float alpha, float beta, int maximizingPlayer) {
     uint64_t hash = compute_zobrist_hash(pos);
 
@@ -67,20 +67,6 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
         float eval = quiescence(pos, alpha, beta, maximizingPlayer, depth);
         tt_store(hash, eval, depth);
         return eval;
-    }
-
-    // NULL MOVE PRUNING: If we can pass the turn and still beat beta, prune
-    // Skip if in check or depth is too low
-    if (depth >= 3 && !is_in_check(pos, maximizingPlayer)) {
-        Position null_copy = *pos;
-        null_copy.white_to_move = !null_copy.white_to_move; // Pass turn
-        
-        // Search with reduced depth (R=2)
-        float null_score = minimax(&null_copy, depth - 3, alpha, beta, !maximizingPlayer);
-        
-        if ((maximizingPlayer && null_score >= beta) || (!maximizingPlayer && null_score <= alpha)) {
-            return null_score; // Prune this branch
-        }
     }
 
     char moves[256][6];

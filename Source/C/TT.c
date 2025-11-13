@@ -10,9 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Increased from 1M to 16M entries (128MB instead of 8MB)
-// This significantly reduces hash collisions in deep searches
-#define TT_SIZE (1 << 24)
+#define TT_SIZE (1 << 20)
 
 static TTEntry* table = NULL;
 

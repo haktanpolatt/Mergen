@@ -166,30 +166,12 @@ const char* find_best_move_parallel(const char* fen, int depth, int num_threads)
     // IMPORTANT: Sort moves ONCE before iterative deepening for better cutoffs
     sort_moves(&pos, moves, num_moves, depth);
     
-    // Single threaded for depth 1 (too fast to parallelize)
-    if (depth == 1 || g_num_threads == 1) {
-        strcpy(best_move, moves[0]);
-        float best_score = is_white ? -10000.0f : 10000.0f;
-        
-        for (int i = 0; i < num_moves; i++) {
-            Position copy = pos;
-            make_move(&copy, moves[i]);
-            float score = minimax(&copy, 0, -10000.0f, 10000.0f, !is_white);
-            
-            if ((is_white && score > best_score) || (!is_white && score < best_score)) {
-                best_score = score;
-                strcpy(best_move, moves[i]);
-            }
-        }
-        return best_move;
-    }
-    
     strcpy(best_move, moves[0]);
     
-    // ITERATIVE DEEPENING with parallel search
+    // ITERATIVE DEEPENING (both single and multi-threaded use this)
     for (int current_depth = 1; current_depth <= depth; current_depth++) {
-        // For shallow depths, use single thread
-        if (current_depth <= 2) {
+        // For shallow depths or single thread, use simple search
+        if (current_depth <= 2 || g_num_threads == 1) {
             float best_score = is_white ? -10000.0f : 10000.0f;
             
             for (int i = 0; i < num_moves; i++) {

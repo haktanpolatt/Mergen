@@ -15,6 +15,9 @@
 // This table is used to store the history of moves for the history heuristic.
 int history_table[64][64] = {0};
 
+// Global pointer (for qsort)
+static Position* current_pos = NULL;
+
 // Piece values for MVV-LVA (Most Valuable Victim - Least Valuable Attacker) (p, n, b, r, q, k)
 static const int mvv_lva[6][6] = {
     {105, 205, 305, 405, 505, 605}, // victim = pawn
@@ -40,15 +43,14 @@ static int piece_index(char type) {
 }
 
 // Calculate the score of a move based on MVV-LVA
-// NOW THREAD-SAFE: Pass position as parameter instead of using global
-static int move_score(const char* move, Position* pos, int depth) {
+static int move_score(const char* move, int depth) {
     int from_file = move[0] - 'a';
     int from_rank = '8' - move[1];
     int to_file   = move[2] - 'a';
     int to_rank   = '8' - move[3];
 
-    Piece attacker = pos->board[from_rank][from_file];
-    Piece victim   = pos->board[to_rank][to_file];
+    Piece attacker = current_pos->board[from_rank][from_file];
+    Piece victim   = current_pos->board[to_rank][to_file];
 
     if (victim.type != 0) {
         // Capture → MVV-LVA
@@ -69,52 +71,46 @@ static int move_score(const char* move, Position* pos, int depth) {
     }
 }
 
-// Context structure to pass both position and depth to compare function
-typedef struct {
-    Position* pos;
-    int depth;
-} SortContext;
-
 #ifdef _WIN32
 
 // Compare function for qsort to order moves based on their score
 // Higher scores come first, so we sort in descending order.
-static int compare_moves_win(void *context_ptr, const void *a, const void *b) {
-    SortContext* ctx = (SortContext*)context_ptr;
+static int compare_moves_win(void *depth_ptr, const void *a, const void *b) {
+    int depth = *(int*)depth_ptr;
     const char* move_a = (const char*)a;
     const char* move_b = (const char*)b;
 
-    int score_a = move_score(move_a, ctx->pos, ctx->depth);
-    int score_b = move_score(move_b, ctx->pos, ctx->depth);
+    int score_a = move_score(move_a, depth);
+    int score_b = move_score(move_b, depth);
 
     return score_b - score_a; // Higher score first
 }
 
-// Sort moves using MVV-LVA heuristic - NOW THREAD-SAFE
+// Sort moves using MVV-LVA heuristic
 void sort_moves(Position *pos, char moves[][6], int num_moves, int depth) {
-    SortContext ctx = { pos, depth };
-    qsort_s(moves, num_moves, sizeof(moves[0]), compare_moves_win, &ctx);
+    current_pos = pos;
+    qsort_s(moves, num_moves, sizeof(moves[0]), compare_moves_win, &depth);
 }
 
 #else
 
 // Compare function for qsort to order moves based on their score
 // Higher scores come first, so we sort in descending order.
-static int compare_moves_unix(const void* a, const void* b, void* context_ptr) {
-    SortContext* ctx = (SortContext*)context_ptr;
+static int compare_moves_unix(const void* a, const void* b, void* depth_ptr) {
+    int depth = *(int*)depth_ptr;
     const char* move_a = (const char*)a;
     const char* move_b = (const char*)b;
 
-    int score_a = move_score(move_a, ctx->pos, ctx->depth);
-    int score_b = move_score(move_b, ctx->pos, ctx->depth);
+    int score_a = move_score(move_a, depth);
+    int score_b = move_score(move_b, depth);
 
     return score_b - score_a; // Higher score first
 }
 
-// Sort moves using MVV-LVA heuristic - NOW THREAD-SAFE
+// Sort moves using MVV-LVA heuristic
 void sort_moves(Position *pos, char moves[][6], int num_moves, int depth) {
-    SortContext ctx = { pos, depth };
-    qsort_r(moves, num_moves, sizeof(moves[0]), compare_moves_unix, &ctx);
+    current_pos = pos;
+    qsort_r(moves, num_moves, sizeof(moves[0]), compare_moves_unix, &depth);
 }
 
 #endif
