@@ -54,15 +54,27 @@ const char* find_best_move_from_fen(const char* fen, int depth) {
     // Initialize best move
     strcpy(best_move, moves[0]);
 
-    // ITERATIVE DEEPENING: Search progressively from depth 1 to target depth
+    // ITERATIVE DEEPENING with ASPIRATION WINDOWS
     // Benefits:
     // 1. Better move ordering (PV from previous iteration tried first)
     // 2. Enables time management (can stop early if time runs out)
-    // 3. More efficient alpha-beta cutoffs
+    // 3. Aspiration windows: narrow alpha-beta bounds for faster search
+    float prev_score = 0.0f;
+    
     for (int current_depth = 1; current_depth <= depth; current_depth++) {
         float best_score = is_white ? -10000.0f : 10000.0f;
         char current_best[6];
         strcpy(current_best, best_move);
+
+        // ASPIRATION WINDOWS: Use narrow window for depth >= 3
+        float alpha = -10000.0f;
+        float beta = 10000.0f;
+        float window = 50.0f; // Initial window size
+        
+        if (current_depth >= 3) {
+            alpha = prev_score - window;
+            beta = prev_score + window;
+        }
 
         // Try PV move first if we have one from previous iteration
         if (current_depth > 1) {
@@ -81,21 +93,55 @@ const char* find_best_move_from_fen(const char* fen, int depth) {
             }
         }
 
+        // Search with aspiration window
+        int needs_research = 0;
         for (int i = 0; i < num_moves; i++) {
             Position copy = pos;
             make_move(&copy, moves[i]);
 
-            float score = minimax(&copy, current_depth - 1, -10000.0f, 10000.0f, !is_white);
+            float score = minimax(&copy, current_depth - 1, alpha, beta, !is_white);
 
             if ((is_white && score > best_score) || (!is_white && score < best_score)) {
                 best_score = score;
                 strcpy(current_best, moves[i]);
             }
+            
+            // Check if we failed outside the aspiration window
+            if (current_depth >= 3) {
+                if ((is_white && score <= alpha) || (is_white && score >= beta)) {
+                    needs_research = 1;
+                    break;
+                }
+                if ((!is_white && score >= beta) || (!is_white && score <= alpha)) {
+                    needs_research = 1;
+                    break;
+                }
+            }
         }
 
-        // Update best move and PV for this depth
+        // If aspiration window failed, re-search with full window
+        if (needs_research) {
+            best_score = is_white ? -10000.0f : 10000.0f;
+            alpha = -10000.0f;
+            beta = 10000.0f;
+            
+            for (int i = 0; i < num_moves; i++) {
+                Position copy = pos;
+                make_move(&copy, moves[i]);
+
+                float score = minimax(&copy, current_depth - 1, alpha, beta, !is_white);
+
+                if ((is_white && score > best_score) || (!is_white && score < best_score)) {
+                    best_score = score;
+                    strcpy(current_best, moves[i]);
+                }
+            }
+        }
+
+        // Update best move, PV, and previous score
         strcpy(best_move, current_best);
         strcpy(pv, current_best);
+        prev_score = best_score;
     }
 
     return best_move;
