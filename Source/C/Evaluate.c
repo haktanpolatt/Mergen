@@ -222,31 +222,94 @@ float evaluate_king_safety(Position* pos) {
 
             float modifier = king.is_white ? 1.0f : -1.0f;
 
-            // Is the king in the center?
+            // King in center - dangerous in opening/middlegame
             if ((file == 3 || file == 4) && (rank == 0 || rank == 7)) {
-                score += modifier * -0.2f;
+                score += modifier * -0.4f; // Increased penalty
             }
 
-            // Is the king on the castle squares? (e.g.: g1 / c1 / g8 / c8)
+            // King on castled squares - safe position
             if ((file == 6 || file == 2) && (rank == 0 || rank == 7)) {
-                score += modifier * 0.3f;
+                score += modifier * 0.5f; // Increased bonus
             }
 
-            // Check for pawn shield
-            // A pawn shield is a pawn in front of the king
+            // Pawn shield evaluation - pawns protecting the king
             int front_rank = king.is_white ? rank - 1 : rank + 1;
+            int pawn_shield_count = 0;
+            
             if (front_rank >= 0 && front_rank < 8) {
                 for (int df = -1; df <= 1; df++) {
                     int f = file + df;
                     if (f < 0 || f > 7) continue;
                     Piece front = board[front_rank][f];
                     if (front.type == 'p' && front.is_white == king.is_white) {
-                        goto safe;
+                        pawn_shield_count++;
                     }
                 }
-                score += modifier * -0.25f;
-                safe:;
             }
+            
+            // Bonus for each shielding pawn
+            score += modifier * (pawn_shield_count * 0.15f);
+            
+            // Penalty for no pawn shield
+            if (pawn_shield_count == 0) {
+                score += modifier * -0.3f;
+            }
+
+            // Open files near king - dangerous for attacks
+            for (int df = -1; df <= 1; df++) {
+                int king_file = file + df;
+                if (king_file < 0 || king_file > 7) continue;
+                
+                // Count pawns on this file
+                int friendly_pawns = 0;
+                int enemy_pawns = 0;
+                
+                for (int r = 0; r < 8; r++) {
+                    Piece p = board[r][king_file];
+                    if (p.type == 'p') {
+                        if (p.is_white == king.is_white) {
+                            friendly_pawns++;
+                        } else {
+                            enemy_pawns++;
+                        }
+                    }
+                }
+                
+                // Open file (no pawns) near king is dangerous
+                if (friendly_pawns == 0 && enemy_pawns == 0) {
+                    score += modifier * -0.25f;
+                }
+                
+                // Semi-open file (no friendly pawns) is also risky
+                if (friendly_pawns == 0 && enemy_pawns > 0) {
+                    score += modifier * -0.15f;
+                }
+            }
+
+            // King exposure - count attacking squares around king
+            int exposed_squares = 0;
+            for (int dr = -1; dr <= 1; dr++) {
+                for (int df = -1; df <= 1; df++) {
+                    if (dr == 0 && df == 0) continue;
+                    
+                    int adj_rank = rank + dr;
+                    int adj_file = file + df;
+                    
+                    if (adj_rank < 0 || adj_rank > 7 || adj_file < 0 || adj_file > 7) {
+                        continue;
+                    }
+                    
+                    Piece adj = board[adj_rank][adj_file];
+                    
+                    // Empty square or enemy piece nearby = exposed
+                    if (adj.type == 0 || adj.is_white != king.is_white) {
+                        exposed_squares++;
+                    }
+                }
+            }
+            
+            // Penalty for each exposed square (max 8 squares around king)
+            score += modifier * (exposed_squares * -0.05f);
         }
     }
 
