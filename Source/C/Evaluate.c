@@ -355,6 +355,105 @@ float evaluate_rook_activity(Position* pos) {
     return score;
 }
 
+// EVALUATE MOBILITY
+// Count legal moves for both sides as measure of piece activity
+float evaluate_mobility(Position* pos) {
+    float score = 0.0;
+    
+    // Generate legal moves for both sides
+    char white_moves[256][6];
+    char black_moves[256][6];
+    
+    int white_mobility = generate_legal_moves(pos, 1, white_moves);
+    int black_mobility = generate_legal_moves(pos, 0, black_moves);
+    
+    // Each legal move is worth a small bonus (0.02 per move)
+    // This encourages piece activity and flexibility
+    score += (white_mobility - black_mobility) * 0.02f;
+    
+    // Additional bonus for piece-specific mobility
+    Piece (*board)[8] = pos->board;
+    
+    for (int rank = 0; rank < 8; rank++) {
+        for (int file = 0; file < 8; file++) {
+            Piece p = board[rank][file];
+            if (p.type == 0) continue;
+            
+            float modifier = p.is_white ? 1.0f : -1.0f;
+            
+            // Count squares each piece can move to (simplified)
+            int piece_moves = 0;
+            
+            // Knights: count potential squares
+            if (p.type == 'n') {
+                int knight_offsets[8][2] = {
+                    {-2, -1}, {-2, 1}, {-1, -2}, {-1, 2},
+                    {1, -2}, {1, 2}, {2, -1}, {2, 1}
+                };
+                for (int i = 0; i < 8; i++) {
+                    int new_rank = rank + knight_offsets[i][0];
+                    int new_file = file + knight_offsets[i][1];
+                    if (new_rank >= 0 && new_rank < 8 && new_file >= 0 && new_file < 8) {
+                        Piece target = board[new_rank][new_file];
+                        // Can move to empty square or capture
+                        if (target.type == 0 || target.is_white != p.is_white) {
+                            piece_moves++;
+                        }
+                    }
+                }
+                score += modifier * (piece_moves * 0.03f);
+            }
+            
+            // Bishops: count diagonal mobility
+            else if (p.type == 'b') {
+                int directions[4][2] = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+                for (int d = 0; d < 4; d++) {
+                    int r = rank + directions[d][0];
+                    int f = file + directions[d][1];
+                    while (r >= 0 && r < 8 && f >= 0 && f < 8) {
+                        Piece target = board[r][f];
+                        if (target.type == 0) {
+                            piece_moves++;
+                        } else {
+                            if (target.is_white != p.is_white) piece_moves++;
+                            break;
+                        }
+                        r += directions[d][0];
+                        f += directions[d][1];
+                    }
+                }
+                score += modifier * (piece_moves * 0.02f);
+            }
+            
+            // Queens: diagonal + straight mobility
+            else if (p.type == 'q') {
+                int directions[8][2] = {
+                    {-1, -1}, {-1, 0}, {-1, 1}, {0, -1},
+                    {0, 1}, {1, -1}, {1, 0}, {1, 1}
+                };
+                for (int d = 0; d < 8; d++) {
+                    int r = rank + directions[d][0];
+                    int f = file + directions[d][1];
+                    while (r >= 0 && r < 8 && f >= 0 && f < 8) {
+                        Piece target = board[r][f];
+                        if (target.type == 0) {
+                            piece_moves++;
+                        } else {
+                            if (target.is_white != p.is_white) piece_moves++;
+                            break;
+                        }
+                        r += directions[d][0];
+                        f += directions[d][1];
+                    }
+                }
+                score += modifier * (piece_moves * 0.015f);
+            }
+        }
+    }
+    
+    return score;
+}
+
 // EVALUATE BOARD
 float evaluate_board(Position* pos) {
     float score = 0.0;
@@ -365,6 +464,7 @@ float evaluate_board(Position* pos) {
     score += evaluate_development(pos);
     score += evaluate_king_safety(pos);
     score += evaluate_rook_activity(pos);
+    score += evaluate_mobility(pos);
 
     return score;
 }
