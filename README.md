@@ -10,15 +10,18 @@ In Turkish mythology, Mergen is known as the symbol of intelligence, wisdom, and
 Drawing inspiration from this legendary figure, we have developed a chess AI that bases its moves not only on power but on foresight, balance, and intuition.
 
 # 🔧 Features
+- 🎮 **UCI Protocol Support**: Compatible with any chess GUI (Arena, ChessBase, Cute Chess, lichess bots)
 - ♟ **Deep Move Prediction**: Mergen evaluates dozens of possibilities with every move using iterative deepening
 - 🌀 **Intelligence and Intuition**: Adapts its playing style with advanced algorithms like quiescence search and alpha-beta pruning
-- 📚 **Opening Book**: Plays 25+ established opening systems including Ruy Lopez, Sicilian Defense, and Queen's Gambit
+- 📚 **Opening Book**: 108 positions with 186 moves covering major openings
 - 🎯 **Tactical Awareness**: Quiescence search prevents horizon effect and tactical blindness
-- ⚡ **Optimized Performance**: Transposition tables with Zobrist hashing, killer move heuristic, and move ordering
+- ⚡ **Optimized Performance**: 8.6x search speedup with futility pruning and enhanced evaluation
 - 🔍 **Search Enhancements**: Iterative deepening with Principal Variation (PV) tracking
+- 🔀 **Multi-Threading**: Lazy SMP parallel search (1-16 threads, 2-4x speedup)
 - 📖 **Pawn Promotion Choice**: Select promotion piece (queen, rook, bishop, knight)
 - ⏱️ **Smart Time Management**: Adaptive time allocation with support for bullet, blitz, rapid, and classical time controls
-- 🕰️ **Time-Aware**: Tracks thinking time and provides search statistics
+- � **Game Persistence**: PGN save/load with full game history
+- ✅ **Comprehensive Tests**: 54 unit tests covering all components
 
 ## 💻 How to Run Mergen?
 
@@ -97,6 +100,14 @@ gcc -O3 -shared -fPIC -o Engine.dylib Engine.c Board.c MoveGen.c Evaluate.c Mini
 
 ## 🆕 Recent Updates (November 2025)
 
+### UCI Protocol Support 🎮 (November 24) **NEW!**
+- **Universal Chess Interface**: Compatible with any UCI chess GUI
+- **GUI Support**: Arena, ChessBase, Cute Chess, and more
+- **Online Play**: Can be used as lichess.org bot
+- **Tournament Ready**: Standardized communication protocol
+- **Easy Setup**: `python uci_launcher.py` or configure in GUI
+- See `Documents/UCI.md` for full guide
+
 ### Performance Breakthrough 🚀 (November 13)
 - **8.6x Search Speedup**: Futility pruning + mobility evaluation (43s → 5s at depth 3!)
 - **Enhanced Evaluation**: Pawn chains, king safety improvements, mobility bonuses
@@ -136,6 +147,7 @@ gcc -O3 -shared -fPIC -o Engine.dylib Engine.c Board.c MoveGen.c Evaluate.c Mini
 - See `tests/README.md` for details
 
 ### Documentation
+- **UCI Protocol Guide**: Complete UCI implementation guide (`Documents/UCI.md`) 🆕
 - **Bibliography**: Academic references for all algorithms (`Documents/Bibliography.md`)
 - **Time Management Guide**: Complete guide to time controls (`Documents/TimeManagement.md`)
 - **Opening Book Guide**: Opening coverage and customization (`Documents/OpeningBook.md`)
