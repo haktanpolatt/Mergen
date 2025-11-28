@@ -2,7 +2,7 @@
 
 ## Summary
 
-Successfully created a comprehensive test suite for the Mergen chess engine with **54 tests** covering all major components. All tests are passing.
+Successfully created a comprehensive test suite for the Mergen chess engine with **62 tests** covering all major components. All tests are passing.
 
 ## Test Suite Structure
 
@@ -42,15 +42,27 @@ Successfully created a comprehensive test suite for the Mergen chess engine with
    - Game result detection (checkmate, stalemate)
    - Listing saved games
 
+6. **`tests/test_parallel_search.py`** (2 tests)
+   - Parallel fixed-depth move legality
+   - Parallel timed move legality and depth reporting
+
+7. **`tests/test_time_management.py`** (6 tests)
+   - Control detection (bullet/blitz/rapid/classical)
+   - Infinite/fixed time handling
+   - Emergency mode clamping
+   - Phase detection (opening/endgame)
+   - Time accounting with increment
+   - Control scaling (bullet vs classical)
+
 ### Supporting Infrastructure
 
-6. **`run_tests.py`** - Test runner script
+8. **`run_tests.py`** - Test runner script
    - Run all tests or specific categories
    - Verbosity control (-v, -q flags)
    - Exit codes for CI/CD integration
    - Summary reporting
 
-7. **`tests/README.md`** - Documentation
+9. **`tests/README.md`** - Documentation
    - Test categories explained
    - Usage instructions
    - Common issues and solutions
@@ -62,13 +74,13 @@ Successfully created a comprehensive test suite for the Mergen chess engine with
 Running Mergen chess engine tests...
 ======================================================================
 
-Ran 54 tests in 88.798s
+Ran 62 tests in ~28s (local)
 
 OK
 
 ======================================================================
-Tests run: 54
-Successes: 54
+Tests run: 62
+Successes: 62
 Failures: 0
 Errors: 0
 
@@ -173,13 +185,13 @@ python3 run_tests.py -q         # Quiet (minimal) output
 
 - **Framework**: Python `unittest`
 - **Dependencies**: `chess` library (python-chess)
-- **Test Duration**: ~90 seconds for full suite
+- **Test Duration**: ~30 seconds for full suite (local)
 - **Coverage**: All major engine components
 - **Integration**: Tests use actual C engine via ctypes
 
 ## Key Accomplishments
 
-1. ✅ Created 54 comprehensive tests
+1. ✅ Created 62 comprehensive tests
 2. ✅ All tests passing (100% success rate)
 3. ✅ Proper test structure with unittest framework
 4. ✅ Test runner with category support
@@ -206,9 +218,11 @@ The test suite is ready to use:
 - ✅ `tests/test_tactics.py` - Tactical tests
 - ✅ `tests/test_opening_book.py` - Opening book tests
 - ✅ `tests/test_pgn.py` - PGN save/load tests
+- ✅ `tests/test_parallel_search.py` - Parallel search legality tests
+- ✅ `tests/test_time_management.py` - Time control behavior tests
 - ✅ `run_tests.py` - Test runner script
 - ✅ `tests/README.md` - Test documentation
 
 ## Conclusion
 
-The comprehensive test suite is complete and fully functional. All 54 tests pass successfully, providing excellent coverage of the Mergen chess engine's functionality. The test infrastructure is professional, well-documented, and ready for continuous use.
+The comprehensive test suite is complete and fully functional. All 62 tests pass successfully, providing excellent coverage of the Mergen chess engine's functionality. The test infrastructure is professional, well-documented, and ready for continuous use.

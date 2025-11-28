@@ -28,7 +28,7 @@ UCI is a standardized protocol for chess engines to communicate with graphical u
 
 3. **`setoption`** - Configure engine
    - `Threads` (1-16): Number of search threads
-   - `Hash` (1-1024 MB): Hash table size (placeholder)
+   - `Hash` (1-1024 MB): Hash table size (resizes C transposition table)
    - `OwnBook` (true/false): Use opening book
    - `Debug` (true/false): Enable debug logging
 
@@ -56,7 +56,7 @@ UCI is a standardized protocol for chess engines to communicate with graphical u
 | Option | Type | Default | Range | Description |
 |--------|------|---------|-------|-------------|
 | Threads | spin | 1 | 1-16 | Number of search threads |
-| Hash | spin | 64 | 1-1024 | Hash table size in MB |
+| Hash | spin | 64 | 1-1024 | Hash table size in MB (resizes TT) |
 | OwnBook | check | true | - | Use internal opening book |
 | Debug | check | false | - | Enable debug logging |
 
@@ -288,7 +288,7 @@ quit
 
 ### Time management issues
 - Mergen uses conservative time allocation
-- Will not exceed 40% of remaining time
+- Uses monotonic timers with in-search checks to avoid exceeding movetime
 - Minimum 100ms per move
 
 ### Multi-threading not working
@@ -303,14 +303,10 @@ quit
    - Currently searches complete
    - Would require thread-safe interruption
 
-2. **Hash table management** - Transposition table resizing
-   - Hash size option accepted but not used
-   - TT size fixed in C code
-
-3. **`ponderhit` / `ponder`** - Thinking on opponent's time
+2. **`ponderhit` / `ponder`** - Thinking on opponent's time
    - Planned for future release
 
-4. **Info strings during search**
+3. **Info strings during search**
    - No real-time depth/eval updates
    - Only final bestmove sent
 

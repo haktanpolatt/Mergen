@@ -21,7 +21,7 @@ Drawing inspiration from this legendary figure, we have developed a chess AI tha
 - 📖 **Pawn Promotion Choice**: Select promotion piece (queen, rook, bishop, knight)
 - ⏱️ **Smart Time Management**: Adaptive time allocation with support for bullet, blitz, rapid, and classical time controls
 - � **Game Persistence**: PGN save/load with full game history
-- ✅ **Comprehensive Tests**: 54 unit tests covering all components
+- ✅ **Comprehensive Tests**: 62 unit tests covering all components
 - 🛠️ **Developer Utilities**: `parallel_benchmark.py` to spot single vs. multi-thread timing regressions at depth 3
 
 ## 💻 How to Run Mergen?
@@ -114,7 +114,7 @@ gcc -O3 -shared -fPIC -o Engine.dylib Engine.c Board.c MoveGen.c Evaluate.c Mini
 - **Enhanced Evaluation**: Pawn chains, king safety improvements, mobility bonuses
 - **Expanded Opening Book**: 108 positions (from 84), +29% more coverage
 - **PGN Support**: Save/load games, auto-save, game history
-- **Comprehensive Test Suite**: 54 tests covering all components (100% passing)
+- **Comprehensive Test Suite**: 62 tests covering all components (100% passing)
 
 ### Pawn Promotion
 - Players can now choose promotion piece (Q/R/B/N)
@@ -141,7 +141,7 @@ gcc -O3 -shared -fPIC -o Engine.dylib Engine.c Board.c MoveGen.c Evaluate.c Mini
 - See `Documents/OpeningBook.md` for details
 
 ### Testing ✅ NEW!
-- **54 Comprehensive Tests**: Move generation, evaluation, tactics, opening book, PGN
+- **62 Comprehensive Tests**: Move generation, evaluation, tactics, opening book, PGN, time management, parallel-search sanity
 - **Test Runner**: `python3 run_tests.py` (with category support)
 - **100% Passing**: All tests verified
 - **CI/CD Ready**: Professional test infrastructure

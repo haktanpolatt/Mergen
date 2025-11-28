@@ -431,7 +431,7 @@ move, depth, time_ms = find_best_move_parallel_timed_from_c(
 7. ✅ Test multi-threading (1/2/4/8 threads)
 
 ### Advanced Testing ✅ AUTOMATED
-1. ✅ **Comprehensive test suite** (54 tests)
+1. ✅ **Comprehensive test suite** (62 tests)
    - Move generation correctness
    - Evaluation accuracy
    - Tactical strength
@@ -549,7 +549,7 @@ move, depth, time_ms = find_best_move_parallel_timed_from_c(
 
 **Structure:**
 - `tests/` directory with unittest framework
-- 54 tests covering all engine components
+- 62 tests covering all engine components
 - Professional test runner with category support
 - Complete documentation
 
@@ -597,7 +597,7 @@ move, depth, time_ms = find_best_move_parallel_timed_from_c(
 
 **Results:**
 ```
-Ran 54 tests in 88.798s
+Ran 62 tests in ~28s (local)
 ✓ All tests passed!
 ```
 
@@ -622,7 +622,7 @@ Ran 54 tests in 88.798s
 - Comprehensive coverage
 
 **Code Quality:**
-- 54 comprehensive tests
+- 62 comprehensive tests
 - Full PGN support
 - Professional documentation
 - Type-safe implementations
@@ -665,7 +665,7 @@ Ran 54 tests in 88.798s
 
 **Engine Options:**
 - **Threads** (1-16): Multi-threaded search support
-- **Hash** (1-1024 MB): Hash table size (placeholder)
+- **Hash** (1-1024 MB): Hash table size (resizes TT in C engine)
 - **OwnBook** (true/false): Enable/disable opening book
 - **Debug** (true/false): Debug logging to stderr
 
@@ -871,7 +871,7 @@ The November 2025 updates (10th, 13th, and 24th) represent a **massive advanceme
 📈 **Enhanced Evaluation** (pawn chains, king safety, mobility)
 📚 **Expanded Opening Book** (108 positions, +29%)
 💾 **PGN Save/Load** (full game persistence)
-✅ **Comprehensive Test Suite** (54 tests, 100% passing)
+✅ **Comprehensive Test Suite** (62 tests, 100% passing)
 
 ### November 24, 2025:
 🎮 **UCI PROTOCOL SUPPORT** (Game-changing accessibility!)
@@ -886,7 +886,7 @@ The November 2025 updates (10th, 13th, and 24th) represent a **massive advanceme
 - Utilizes modern multi-core CPUs effectively
 - Manages time intelligently
 - Persists games in standard PGN format
-- Has comprehensive test coverage (54 tests)
+- Has comprehensive test coverage (62 tests)
 - **Tournament and online play ready**
 - Provides insight into its thinking process
 - Has comprehensive academic documentation

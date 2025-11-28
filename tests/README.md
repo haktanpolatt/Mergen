@@ -27,6 +27,7 @@ Validates core time-allocation behaviors:
 - **Emergency Mode**: Clamps target and max time when low on clock
 - **Phase Detection**: Opening vs. endgame heuristics
 - **Accounting**: Remaining time updates include increment
+- **Control Scaling**: Bullet uses less time than classical
 
 ### 2. Evaluation (`test_evaluation.py`)
 Tests the position evaluation function:
@@ -131,7 +132,7 @@ If a test fails, you'll see:
 
 ## Test Coverage
 
-Current test suite covers:
+Current test suite covers (62 tests):
 - ✅ Legal move generation and validation
 - ✅ Special moves (castling, en passant, promotion)
 - ✅ Position evaluation accuracy
@@ -141,6 +142,8 @@ Current test suite covers:
 - ✅ PGN save/load functionality
 - ✅ FEN import/export
 - ✅ Game result detection
+- ✅ Parallel search sanity (fixed-depth and timed)
+- ✅ Time management behaviors (controls, emergency mode, scaling)
 
 ## Adding New Tests
 
