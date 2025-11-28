@@ -7,7 +7,10 @@ Targets depth 3 to avoid long runs; use for spotting regressions in Lazy SMP.
 import time
 from typing import List, Dict
 
-from Interface import get_best_move_from_c, find_best_move_parallel_from_c
+from Interface import (
+    find_best_move_timed_from_c,
+    find_best_move_parallel_timed_from_c,
+)
 
 
 TEST_POSITIONS: List[Dict[str, str]] = [
@@ -34,23 +37,27 @@ def time_call(fn, *args, **kwargs):
 
 
 def main():
-    depth = 3
     threads = 2
+    max_ms = 2000  # cap each search to avoid hangs
 
-    print("=== Parallel benchmark (depth={depth}, threads={threads}) ===".format(
-        depth=depth, threads=threads
+    print("=== Parallel benchmark (timed, {threads} threads, {max_ms}ms cap) ===".format(
+        threads=threads, max_ms=max_ms
     ))
 
     for pos in TEST_POSITIONS:
         fen = pos["fen"]
         name = pos["name"]
         print(f"\n{name}")
-        _, t_single = time_call(get_best_move_from_c, fen, depth)
-        _, t_parallel = time_call(find_best_move_parallel_from_c, fen, depth, threads)
+        (single_move, single_depth, single_ms), t_single = time_call(
+            find_best_move_timed_from_c, fen, max_ms
+        )
+        (para_move, para_depth, para_ms), t_parallel = time_call(
+            find_best_move_parallel_timed_from_c, fen, max_ms, threads
+        )
 
         speedup = t_single / t_parallel if t_parallel > 0 else 0
-        print(f"  single-thread:  {t_single:6.3f}s")
-        print(f"  {threads} threads: {t_parallel:6.3f}s")
+        print(f"  single-thread:  {t_single:6.3f}s (engine {single_ms/1000:5.2f}s, depth {single_depth}, move {single_move})")
+        print(f"  {threads} threads: {t_parallel:6.3f}s (engine {para_ms/1000:5.2f}s, depth {para_depth}, move {para_move})")
         print(f"  speedup:       {speedup:6.2f}x")
 
         if t_parallel > t_single:
