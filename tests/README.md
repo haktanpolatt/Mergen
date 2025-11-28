@@ -20,6 +20,14 @@ Sanity checks for multi-threaded search:
 - **Fixed Depth**: Parallel search returns a legal move at depth 2
 - **Timed Search**: Parallel timed search returns a legal move and reports reached depth
 
+### 1c. Time Management (`test_time_management.py`)
+Validates core time-allocation behaviors:
+- **Detection**: Time control auto-detection picks the right bucket
+- **Infinite/Fixed**: Special cases return expected limits
+- **Emergency Mode**: Clamps target and max time when low on clock
+- **Phase Detection**: Opening vs. endgame heuristics
+- **Accounting**: Remaining time updates include increment
+
 ### 2. Evaluation (`test_evaluation.py`)
 Tests the position evaluation function:
 - **Material Balance**: Equal positions score near 0
@@ -67,6 +75,7 @@ python run_tests.py
 ```bash
 python run_tests.py moves      # Move generation only
 python run_tests.py parallel   # Parallel search sanity checks
+python run_tests.py time       # Time management behavior
 python run_tests.py eval       # Evaluation only
 python run_tests.py tactics    # Tactical tests only
 python run_tests.py book       # Opening book only

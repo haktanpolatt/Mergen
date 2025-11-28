@@ -19,6 +19,7 @@ from tests.test_tactics import (TestMateInOne, TestMateInTwo, TestTacticalMotifs
 from tests.test_opening_book import TestOpeningBook, TestOpeningBookManipulation
 from tests.test_pgn import TestPGNSaveLoad, TestFENSaveLoad, TestPGNGameResults
 from tests.test_parallel_search import TestParallelSearch
+from tests.test_time_management import TestTimeManagement
 
 
 def run_test_suite(verbosity=2):
@@ -41,6 +42,7 @@ def run_test_suite(verbosity=2):
         TestMoveGeneration,
         TestPerftPositions,
         TestParallelSearch,
+        TestTimeManagement,
         
         # Evaluation tests
         TestEvaluation,
@@ -88,6 +90,7 @@ def run_specific_category(category, verbosity=2):
     category_map = {
         'moves': [TestMoveGeneration, TestPerftPositions],
         'parallel': [TestParallelSearch],
+        'time': [TestTimeManagement],
         'eval': [TestEvaluation, TestPieceValues],
         'tactics': [TestMateInOne, TestMateInTwo, TestTacticalMotifs,
                    TestEndgameKnowledge, TestAvoidBlunders],
@@ -116,7 +119,7 @@ def main():
     
     parser = argparse.ArgumentParser(description='Run Mergen chess engine tests')
     parser.add_argument('category', nargs='?', default='all',
-                       help='Test category to run (all, moves, eval, tactics, book, pgn)')
+                       help='Test category to run (all, moves, parallel, time, eval, tactics, book, pgn)')
     parser.add_argument('-v', '--verbose', action='store_true',
                        help='Verbose output')
     parser.add_argument('-q', '--quiet', action='store_true',
