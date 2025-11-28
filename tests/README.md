@@ -15,6 +15,11 @@ Tests the legality and correctness of move generation:
 - **Pawn Promotion**: Verifies promotion to queen/knight
 - **PERFT Testing**: Position verification at depths 1-2
 
+### 1b. Parallel Search (`test_parallel_search.py`)
+Sanity checks for multi-threaded search:
+- **Fixed Depth**: Parallel search returns a legal move at depth 2
+- **Timed Search**: Parallel timed search returns a legal move and reports reached depth
+
 ### 2. Evaluation (`test_evaluation.py`)
 Tests the position evaluation function:
 - **Material Balance**: Equal positions score near 0
@@ -61,6 +66,7 @@ python run_tests.py
 ### Run Specific Category
 ```bash
 python run_tests.py moves      # Move generation only
+python run_tests.py parallel   # Parallel search sanity checks
 python run_tests.py eval       # Evaluation only
 python run_tests.py tactics    # Tactical tests only
 python run_tests.py book       # Opening book only

@@ -18,6 +18,7 @@ from tests.test_tactics import (TestMateInOne, TestMateInTwo, TestTacticalMotifs
                                  TestEndgameKnowledge, TestAvoidBlunders)
 from tests.test_opening_book import TestOpeningBook, TestOpeningBookManipulation
 from tests.test_pgn import TestPGNSaveLoad, TestFENSaveLoad, TestPGNGameResults
+from tests.test_parallel_search import TestParallelSearch
 
 
 def run_test_suite(verbosity=2):
@@ -39,6 +40,7 @@ def run_test_suite(verbosity=2):
         # Move generation tests
         TestMoveGeneration,
         TestPerftPositions,
+        TestParallelSearch,
         
         # Evaluation tests
         TestEvaluation,
@@ -85,6 +87,7 @@ def run_specific_category(category, verbosity=2):
     
     category_map = {
         'moves': [TestMoveGeneration, TestPerftPositions],
+        'parallel': [TestParallelSearch],
         'eval': [TestEvaluation, TestPieceValues],
         'tactics': [TestMateInOne, TestMateInTwo, TestTacticalMotifs,
                    TestEndgameKnowledge, TestAvoidBlunders],
