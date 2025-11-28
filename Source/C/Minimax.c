@@ -39,6 +39,18 @@ static double g_time_start_ms = 0.0;
 static double g_time_limit_ms = 0.0;
 static int g_time_up = 0;
 
+static int count_pieces(Position* pos) {
+    int count = 0;
+    for (int r = 0; r < 8; r++) {
+        for (int f = 0; f < 8; f++) {
+            if (pos->board[r][f].type != 0) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
 void minimax_set_time_limit(double start_ms, double limit_ms) {
     g_time_limit_enabled = 1;
     g_time_start_ms = start_ms;
@@ -117,6 +129,8 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
         return cached_eval;
     }
 
+    int in_check = is_in_check(pos, maximizingPlayer);
+
     if (depth == 0 || is_game_over(pos)) {
         float eval = quiescence(pos, alpha, beta, maximizingPlayer, depth);
         tt_store(hash, eval, depth);
@@ -129,7 +143,7 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
     int do_futility_pruning = 0;
     float futility_margin = 0.0f;
     
-    if (depth <= 2) {
+    if (!in_check && depth <= 2) {
         static_eval = evaluate_board(pos);
         futility_margin = (depth == 1) ? 2.0f : 4.0f; // 2 pawns at depth 1, 4 at depth 2
         
@@ -141,6 +155,24 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
             if (static_eval - futility_margin >= beta) {
                 do_futility_pruning = 1;
             }
+        }
+    }
+
+    // NULL MOVE PRUNING
+    if (!in_check && depth >= 4 && count_pieces(pos) > 10) {
+        int reduction = (depth >= 6) ? 3 : 2;
+        Position null_pos = *pos;
+        null_pos.white_to_move = !pos->white_to_move;
+        null_pos.ep_rank = -1;
+        null_pos.ep_file = -1;
+
+        float null_eval = minimax(&null_pos, depth - 1 - reduction, alpha, beta, !maximizingPlayer);
+        if (maximizingPlayer && null_eval >= beta) {
+            tt_store(hash, beta, depth);
+            return beta;
+        } else if (!maximizingPlayer && null_eval <= alpha) {
+            tt_store(hash, alpha, depth);
+            return alpha;
         }
     }
 

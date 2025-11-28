@@ -77,6 +77,7 @@ void* search_thread(void* arg)
     float alpha = data->alpha;
     float beta = data->beta;
     char thread_best[6] = "";
+    data->nodes = 0;
     
     // Each thread searches its assigned moves WITH alpha-beta pruning
     for (int i = data->start_index; i < data->end_index && i < data->num_moves; i++) {
@@ -92,6 +93,7 @@ void* search_thread(void* arg)
         make_move(&copy, data->moves[i]);
         
         float score = minimax(&copy, data->depth - 1, alpha, beta, !data->is_white);
+        data->nodes += 1;
         
         if (data->is_white) {
             if (score > best_score) {
@@ -238,7 +240,7 @@ const char* find_best_move_parallel(const char* fen, int depth, int num_threads)
         int start_idx = 0;
         for (int t = 0; t < actual_threads; t++) {
             thread_data[t].position = pos;
-            memcpy(thread_data[t].moves, moves, sizeof(moves));
+            thread_data[t].moves = moves;
             thread_data[t].num_moves = num_moves;
             thread_data[t].start_index = start_idx;
             thread_data[t].end_index = start_idx + moves_per_thread + (t < extra_moves ? 1 : 0);
@@ -386,7 +388,7 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
         int start_idx = 0;
         for (int t = 0; t < actual_threads; t++) {
             thread_data[t].position = pos;
-            memcpy(thread_data[t].moves, moves, sizeof(moves));
+            thread_data[t].moves = moves;
             thread_data[t].num_moves = num_moves;
             thread_data[t].start_index = start_idx;
             thread_data[t].end_index = start_idx + moves_per_thread + (t < extra_moves ? 1 : 0);

@@ -17,7 +17,7 @@
 // Thread data structure for parallel search
 typedef struct {
     Position position;
-    char moves[256][6];
+    char (*moves)[6];  // shared move list
     int num_moves;
     int start_index;
     int end_index;
@@ -28,6 +28,7 @@ typedef struct {
     float best_score;
     char best_move[6];
     int thread_id;
+    int nodes;
 } ThreadData;
 
 // Initialize parallel search system
