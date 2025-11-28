@@ -21,6 +21,12 @@
 #include "Ordering.h"
 #include "ParallelSearch.h"
 
+// Allow external callers (e.g., UCI setoption) to adjust transposition table size in MB.
+// Caps are enforced in TT.c to avoid runaway allocations.
+void set_hash_size(int megabytes) {
+    tt_resize(megabytes);
+}
+
 // FIND BEST MOVE WITH ITERATIVE DEEPENING
 // This function finds the best move for the given position in FEN format using iterative deepening.
 // Iterative deepening progressively searches deeper, improving move ordering and enabling time management.
@@ -333,7 +339,6 @@ const char* find_best_move_parallel_from_fen(const char* fen, int depth, int num
 const char* find_best_move_parallel_timed_from_fen(const char* fen, float max_time_ms, int num_threads) {
     return find_best_move_parallel_timed(fen, max_time_ms, num_threads);
 }
-
 
 
 

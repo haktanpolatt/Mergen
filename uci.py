@@ -21,7 +21,8 @@ from Interface import (
     find_best_move_timed_from_c,
     find_best_move_parallel_from_c,
     find_best_move_parallel_timed_from_c,
-    get_cpu_cores
+    get_cpu_cores,
+    set_hash_size,
 )
 from Source.OpeningBook import OpeningBook
 
@@ -90,6 +91,7 @@ class UCIEngine:
             if len(tokens) >= 4 and tokens[2] == "value":
                 try:
                     self.hash_size = max(1, min(1024, int(tokens[3])))
+                    set_hash_size(self.hash_size)
                     if self.debug_mode:
                         self.log(f"Hash set to {self.hash_size} MB")
                 except ValueError:

@@ -18,6 +18,7 @@ typedef struct {
 } TTEntry;
 
 void tt_init();
+void tt_resize(int megabytes);
 void tt_store(uint64_t key, float eval, int depth);
 int tt_lookup(uint64_t key, float* eval, int depth);
 

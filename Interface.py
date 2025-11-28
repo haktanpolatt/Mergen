@@ -29,15 +29,14 @@ else:
     raise OSError(f"Unsupported OS: {system_name}")
 
 lib_path = os.path.abspath(os.path.join(SRC_DIR, lib_name))
+REQUIRED_SYMBOLS = ["find_best_move_from_fen", "set_hash_size"]
 
 # -------------------------
 # Check if the library exists, if not compile it
 # -------------------------
 
-if not os.path.exists(lib_path):
-    print(f"[INFO] {lib_name} is not found. Compiling...")
-
-    # List of C source files to compile
+def compile_engine():
+    print(f"[INFO] Compiling {lib_name}...")
     c_files = [
         "Engine.c", "Board.c", "MoveGen.c", "Evaluate.c",
         "Minimax.c", "Move.c", "Rules.c", "Zobrist.c",
@@ -45,24 +44,36 @@ if not os.path.exists(lib_path):
     ]
     c_files = [os.path.join(SRC_DIR, f) for f in c_files]
 
-    # Compilation command
     if system_name == "Windows":
         cmd = ["gcc", "-O3", "-shared", "-o", lib_path] + c_files + ["-Wno-stringop-overflow"]
     else:
         cmd = ["gcc", "-O3", "-shared", "-fPIC", "-o", lib_path] + c_files + ["-Wno-stringop-overflow"]
 
-    # Run the compilation command
     result = subprocess.run(cmd)
     if result.returncode != 0:
         sys.exit("[ERROR] Compilation failed!")
 
-print(f"[OK] {lib_name} is found, loading...")
 
-# -------------------------
-# Load the shared library
-# -------------------------
+def load_engine():
+    return ctypes.CDLL(lib_path)
 
-lib = ctypes.CDLL(lib_path)
+
+def ensure_engine():
+    needs_build = not os.path.exists(lib_path)
+    if not needs_build:
+        try:
+            nm_output = subprocess.check_output(["nm", "-g", lib_path], text=True)
+            needs_build = any(sym not in nm_output for sym in REQUIRED_SYMBOLS)
+        except Exception:
+            needs_build = True
+
+    if needs_build:
+        compile_engine()
+    return load_engine()
+
+
+print(f"[OK] Loading {lib_name}...")
+lib = ensure_engine()
 
 # -------------------------
 # Function Prototypes
@@ -75,6 +86,19 @@ lib.find_best_move_from_fen.restype = ctypes.c_char_p
 def get_best_move_from_c(fen: str, depth: int = 4) -> str:
     move = lib.find_best_move_from_fen(fen.encode(), depth)
     return move.decode()
+
+# set_hash_size
+lib.set_hash_size.argtypes = [ctypes.c_int]
+lib.set_hash_size.restype = None
+
+def set_hash_size(mb: int):
+    """
+    Resize the transposition table in the C engine.
+    
+    Args:
+        mb: Desired hash size in megabytes (clamped in engine)
+    """
+    lib.set_hash_size(int(mb))
 
 # get_eval_from_c
 lib.evaluate_fen.argtypes = [ctypes.c_char_p]
@@ -174,4 +198,3 @@ def find_best_move_parallel_timed_from_c(fen: str, max_time_ms: float, num_threa
     if len(parts) >= 3:
         return (parts[0], int(parts[1]), float(parts[2]))
     return (parts[0], 0, 0.0)
-
