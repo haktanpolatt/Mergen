@@ -55,6 +55,14 @@ class TestTimeManagement(unittest.TestCase):
         endgame_board = chess.Board("8/8/8/8/8/8/4K3/7k w - - 0 20")
         self.assertEqual(tm._detect_game_phase(endgame_board), GamePhase.ENDGAME)
 
+    def test_time_allocation_scales_by_control(self):
+        board = chess.Board()
+        bullet_tm = TimeManager(total_time=180, increment=0, time_control=TimeControl.BULLET)
+        classical_tm = TimeManager(total_time=1800, increment=0, time_control=TimeControl.CLASSICAL)
+        bullet_target, _ = bullet_tm.get_time_for_move(board)
+        classical_target, _ = classical_tm.get_time_for_move(board)
+        self.assertLess(bullet_target, classical_target, "Bullet allocation should be smaller than classical")
+
 
 if __name__ == "__main__":
     unittest.main()
