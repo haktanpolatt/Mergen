@@ -26,11 +26,11 @@
 // - Compatible with existing search code
 
 #ifdef _WIN32
-    #include <windows.h>
-    #include <process.h>
+#include <windows.h>
+#include <process.h>
 #else
-    #include <pthread.h>
-    #include <unistd.h>
+#include <pthread.h>
+#include <unistd.h>
 #endif
 
 #include <stdio.h>
@@ -48,6 +48,21 @@
 // Global state
 static int g_num_threads = 1;
 static int g_initialized = 0;
+static double g_start_time_ms = 0.0;
+static double g_max_time_ms = 0.0;
+
+static double now_ms(void) {
+#ifdef _WIN32
+    LARGE_INTEGER freq, counter;
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&counter);
+    return (double)counter.QuadPart * 1000.0 / (double)freq.QuadPart;
+#else
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (double)ts.tv_sec * 1000.0 + (double)ts.tv_nsec / 1e6;
+#endif
+}
 
 // Thread function that searches a subset of moves with alpha-beta pruning
 #ifdef _WIN32
@@ -65,6 +80,14 @@ void* search_thread(void* arg)
     
     // Each thread searches its assigned moves WITH alpha-beta pruning
     for (int i = data->start_index; i < data->end_index && i < data->num_moves; i++) {
+        // Time guard for timed searches
+        if (g_max_time_ms > 0.0) {
+            double elapsed_ms = now_ms() - g_start_time_ms;
+            if (elapsed_ms >= g_max_time_ms) {
+                break;
+            }
+        }
+
         Position copy = data->position;
         make_move(&copy, data->moves[i]);
         
@@ -150,6 +173,8 @@ const char* find_best_move_parallel(const char* fen, int depth, int num_threads)
     } else {
         g_num_threads = num_threads;
     }
+    g_start_time_ms = 0.0;
+    g_max_time_ms = 0.0;
     
     Position pos = {0};
     parse_fen(fen, &pos);
@@ -280,8 +305,9 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
         g_num_threads = num_threads;
     }
     
-    clock_t start_time = clock();
-    float max_time_clocks = (max_time_ms / 1000.0f) * CLOCKS_PER_SEC;
+    g_start_time_ms = now_ms();
+    g_max_time_ms = max_time_ms;
+    minimax_set_time_limit(g_start_time_ms, max_time_ms);
     
     Position pos = {0};
     parse_fen(fen, &pos);
@@ -304,10 +330,8 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
     // Iterative deepening with time control and parallel search
     for (int current_depth = 1; current_depth <= 20; current_depth++) {
         // Check time before starting new depth
-        clock_t current_time = clock();
-        float elapsed = (float)(current_time - start_time);
-        
-        if (elapsed >= max_time_clocks * 0.85) {
+        double elapsed_ms = now_ms() - g_start_time_ms;
+        if (elapsed_ms >= max_time_ms * 0.85) {
             // 85% of time used, don't start new depth
             break;
         }
@@ -319,9 +343,8 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
             strcpy(current_best, best_move);
             
             for (int i = 0; i < num_moves; i++) {
-                current_time = clock();
-                elapsed = (float)(current_time - start_time);
-                if (elapsed >= max_time_clocks) break;
+                elapsed_ms = now_ms() - g_start_time_ms;
+                if (elapsed_ms >= max_time_ms) break;
                 
                 Position copy = pos;
                 make_move(&copy, moves[i]);
@@ -395,9 +418,8 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
         }
         
         // Check if we ran out of time
-        current_time = clock();
-        elapsed = (float)(current_time - start_time);
-        if (elapsed >= max_time_clocks) {
+        elapsed_ms = now_ms() - g_start_time_ms;
+        if (elapsed_ms >= max_time_ms) {
             break;
         }
         
@@ -421,8 +443,9 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
         completed_depth = current_depth;
     }
     
-    clock_t end_time = clock();
-    float time_spent = ((float)(end_time - start_time) / CLOCKS_PER_SEC) * 1000.0f;
+    double end_time_ms = now_ms();
+    double time_spent = end_time_ms - g_start_time_ms;
+    minimax_clear_time_limit();
     
     snprintf(result, sizeof(result), "%s %d %.1f", best_move, completed_depth, time_spent);
     return result;

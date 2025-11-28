@@ -11,6 +11,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include "Board.h"
 #include "MoveGen.h"
 #include "Evaluate.h"
@@ -25,6 +28,20 @@
 // Caps are enforced in TT.c to avoid runaway allocations.
 void set_hash_size(int megabytes) {
     tt_resize(megabytes);
+}
+
+// Simple cross-platform monotonic timer in milliseconds
+static double now_ms(void) {
+#ifdef _WIN32
+    LARGE_INTEGER freq, counter;
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&counter);
+    return (double)counter.QuadPart * 1000.0 / (double)freq.QuadPart;
+#else
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (double)ts.tv_sec * 1000.0 + (double)ts.tv_nsec / 1e6;
+#endif
 }
 
 // FIND BEST MOVE WITH ITERATIVE DEEPENING
@@ -230,8 +247,7 @@ const char* find_best_move_timed(const char* fen, float max_time_ms) {
         initialized = 1;
     }
 
-    clock_t start_time = clock();
-    float max_time_clocks = (max_time_ms / 1000.0f) * CLOCKS_PER_SEC;
+    double start_time_ms = now_ms();
 
     Position pos = {0};
     parse_fen(fen, &pos);
@@ -249,14 +265,13 @@ const char* find_best_move_timed(const char* fen, float max_time_ms) {
     // Initialize best move
     strcpy(best_move, moves[0]);
     int completed_depth = 0;
+    minimax_set_time_limit(start_time_ms, max_time_ms);
 
     // Iterative deepening with time control
     for (int current_depth = 1; current_depth <= 20; current_depth++) {
         // Check time before starting new depth
-        clock_t current_time = clock();
-        float elapsed = (float)(current_time - start_time);
-        
-        if (elapsed >= max_time_clocks * 0.9) {
+        double elapsed_ms = now_ms() - start_time_ms;
+        if (elapsed_ms >= max_time_ms * 0.9) {
             // 90% of time used, don't start new depth
             break;
         }
@@ -284,9 +299,8 @@ const char* find_best_move_timed(const char* fen, float max_time_ms) {
         int moves_searched = 0;
         for (int i = 0; i < num_moves; i++) {
             // Check time during search
-            current_time = clock();
-            elapsed = (float)(current_time - start_time);
-            if (elapsed >= max_time_clocks) {
+            elapsed_ms = now_ms() - start_time_ms;
+            if (elapsed_ms >= max_time_ms) {
                 break;  // Time's up
             }
 
@@ -314,8 +328,9 @@ const char* find_best_move_timed(const char* fen, float max_time_ms) {
         }
     }
 
-    clock_t end_time = clock();
-    float time_spent = ((float)(end_time - start_time) / CLOCKS_PER_SEC) * 1000.0f;
+    double end_time_ms = now_ms();
+    double time_spent = end_time_ms - start_time_ms;
+    minimax_clear_time_limit();
 
     // Format: "move depth time_spent_ms"
     snprintf(result, sizeof(result), "%s %d %.1f", best_move, completed_depth, time_spent);
@@ -339,7 +354,3 @@ const char* find_best_move_parallel_from_fen(const char* fen, int depth, int num
 const char* find_best_move_parallel_timed_from_fen(const char* fen, float max_time_ms, int num_threads) {
     return find_best_move_parallel_timed(fen, max_time_ms, num_threads);
 }
-
-
-
-

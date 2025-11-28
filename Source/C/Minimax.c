@@ -7,6 +7,10 @@
 */
 
 #include <stdlib.h>
+#include <time.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include "Minimax.h"
 #include "Evaluate.h"
 #include "MoveGen.h"
@@ -17,8 +21,55 @@
 #include "Ordering.h"
 #include "KillerMoves.h"
 
+static double now_ms(void) {
+#ifdef _WIN32
+    LARGE_INTEGER freq, counter;
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&counter);
+    return (double)counter.QuadPart * 1000.0 / (double)freq.QuadPart;
+#else
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (double)ts.tv_sec * 1000.0 + (double)ts.tv_nsec / 1e6;
+#endif
+}
+
+static int g_time_limit_enabled = 0;
+static double g_time_start_ms = 0.0;
+static double g_time_limit_ms = 0.0;
+static int g_time_up = 0;
+
+void minimax_set_time_limit(double start_ms, double limit_ms) {
+    g_time_limit_enabled = 1;
+    g_time_start_ms = start_ms;
+    g_time_limit_ms = limit_ms;
+    g_time_up = 0;
+}
+
+void minimax_clear_time_limit(void) {
+    g_time_limit_enabled = 0;
+    g_time_start_ms = 0.0;
+    g_time_limit_ms = 0.0;
+    g_time_up = 0;
+}
+
+static int time_exceeded(void) {
+    if (!g_time_limit_enabled || g_time_up) {
+        return g_time_up;
+    }
+    double elapsed = now_ms() - g_time_start_ms;
+    if (elapsed >= g_time_limit_ms) {
+        g_time_up = 1;
+        return 1;
+    }
+    return 0;
+}
+
 // QUIESCENCE SEARCH
 static float quiescence(Position* pos, float alpha, float beta, int maximizingPlayer, int depth) {
+    if (time_exceeded()) {
+        return evaluate_board(pos);
+    }
     float stand_pat = evaluate_board(pos);
 
     // Alpha-beta cutoffs
@@ -56,6 +107,9 @@ static float quiescence(Position* pos, float alpha, float beta, int maximizingPl
 
 // MINIMAX + TT + QUIESCENCE + LATE MOVE REDUCTIONS + FUTILITY PRUNING
 float minimax(Position* pos, int depth, float alpha, float beta, int maximizingPlayer) {
+    if (time_exceeded()) {
+        return evaluate_board(pos);
+    }
     uint64_t hash = compute_zobrist_hash(pos);
 
     float cached_eval;
