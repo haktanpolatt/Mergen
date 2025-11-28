@@ -22,6 +22,7 @@ Drawing inspiration from this legendary figure, we have developed a chess AI tha
 - ⏱️ **Smart Time Management**: Adaptive time allocation with support for bullet, blitz, rapid, and classical time controls
 - � **Game Persistence**: PGN save/load with full game history
 - ✅ **Comprehensive Tests**: 54 unit tests covering all components
+- 🛠️ **Developer Utilities**: `parallel_benchmark.py` to spot single vs. multi-thread timing regressions at depth 3
 
 ## 💻 How to Run Mergen?
 
