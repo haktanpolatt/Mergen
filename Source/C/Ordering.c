@@ -11,8 +11,7 @@
 #include "Ordering.h"
 #include "KillerMoves.h"
 
-// History table for move ordering
-// This table is used to store the history of moves for the history heuristic.
+// History table for move ordering (quiet moves)
 int history_table[64][64] = {0};
 
 // Global pointer (for qsort)

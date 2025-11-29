@@ -215,7 +215,21 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
                 needs_full_search = 1;
             }
             
-            float eval = minimax(&copy, search_depth, alpha, beta, 0);
+            float eval;
+            if (i == 0) {
+                eval = minimax(&copy, search_depth, alpha, beta, 0);
+            } else if (!is_capture) {
+                // PVS: try zero-width window first
+                eval = minimax(&copy, search_depth, alpha, alpha + 1, 0);
+                if (eval > alpha && eval < beta) {
+                    eval = minimax(&copy, search_depth, alpha, beta, 0);
+                } else if (eval >= beta) {
+                    // Cut immediately
+                    eval = beta;
+                }
+            } else {
+                eval = minimax(&copy, search_depth, alpha, beta, 0);
+            }
             
             // If LMR search raised alpha, re-search at full depth
             if (needs_full_search && eval > alpha) {
@@ -261,7 +275,20 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
                 needs_full_search = 1;
             }
             
-            float eval = minimax(&copy, search_depth, alpha, beta, 1);
+            float eval;
+            if (i == 0) {
+                eval = minimax(&copy, search_depth, alpha, beta, 1);
+            } else if (!is_capture) {
+                // PVS window
+                eval = minimax(&copy, search_depth, beta - 1, beta, 1);
+                if (eval < beta && eval > alpha) {
+                    eval = minimax(&copy, search_depth, alpha, beta, 1);
+                } else if (eval <= alpha) {
+                    eval = alpha;
+                }
+            } else {
+                eval = minimax(&copy, search_depth, alpha, beta, 1);
+            }
             
             // If LMR search lowered beta, re-search at full depth
             if (needs_full_search && eval < beta) {
