@@ -23,9 +23,10 @@ class TestParallelSearch(unittest.TestCase):
 
     def test_parallel_timed_is_legal(self):
         board = chess.Board()
-        move_uci, depth_reached, _ = find_best_move_parallel_timed_from_c(
+        result = find_best_move_parallel_timed_from_c(
             board.fen(), max_time_ms=500, num_threads=2
         )
+        move_uci, depth_reached, _ = result[:3]
         move = chess.Move.from_uci(move_uci)
         self.assertIn(move, board.legal_moves, "Parallel timed move should be legal")
         self.assertGreaterEqual(depth_reached, 1, "Timed search should report a reached depth")

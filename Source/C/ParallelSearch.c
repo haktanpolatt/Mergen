@@ -329,6 +329,8 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
     strcpy(best_move, moves[0]);
     int completed_depth = 0;
     
+    int last_total_nodes = 0;
+
     // Iterative deepening with time control and parallel search
     for (int current_depth = 1; current_depth <= 20; current_depth++) {
         // Check time before starting new depth
@@ -445,6 +447,7 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
         strcpy(best_move, current_best);
         strcpy(pv, current_best);
         completed_depth = current_depth;
+        last_total_nodes = total_nodes;
     }
     
     double end_time_ms = now_ms();
@@ -452,6 +455,6 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
     minimax_clear_time_limit();
     
     // Format: move depth time_spent_ms total_nodes
-    snprintf(result, sizeof(result), "%s %d %.1f %d", best_move, completed_depth, time_spent, 0);
+    snprintf(result, sizeof(result), "%s %d %.1f %d", best_move, completed_depth, time_spent, last_total_nodes);
     return result;
 }
