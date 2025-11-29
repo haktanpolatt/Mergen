@@ -195,6 +195,8 @@ def find_best_move_parallel_timed_from_c(fen: str, max_time_ms: float, num_threa
     result = lib.find_best_move_parallel_timed_from_fen(fen.encode(), max_time_ms, num_threads)
     result_str = result.decode()
     parts = result_str.split()
+    if len(parts) >= 4:
+        return (parts[0], int(parts[1]), float(parts[2]), int(parts[3]))
     if len(parts) >= 3:
-        return (parts[0], int(parts[1]), float(parts[2]))
-    return (parts[0], 0, 0.0)
+        return (parts[0], int(parts[1]), float(parts[2]), 0)
+    return (parts[0], 0, 0.0, 0)

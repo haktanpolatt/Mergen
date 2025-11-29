@@ -296,7 +296,7 @@ const char* find_best_move_parallel(const char* fen, int depth, int num_threads)
 
 // Find best move with time limit using parallel search
 const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, int num_threads) {
-    static char result[64];
+    static char result[128];
     static char best_move[6];
     static char pv[6];
     
@@ -429,8 +429,10 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
         float best_score = is_white ? -10000.0f : 10000.0f;
         char current_best[6];
         strcpy(current_best, best_move);
+        int total_nodes = 0;
         
         for (int t = 0; t < actual_threads; t++) {
+            total_nodes += thread_data[t].nodes;
             if (strlen(thread_data[t].best_move) > 0) {
                 if ((is_white && thread_data[t].best_score > best_score) ||
                     (!is_white && thread_data[t].best_score < best_score)) {
@@ -449,6 +451,7 @@ const char* find_best_move_parallel_timed(const char* fen, float max_time_ms, in
     double time_spent = end_time_ms - g_start_time_ms;
     minimax_clear_time_limit();
     
-    snprintf(result, sizeof(result), "%s %d %.1f", best_move, completed_depth, time_spent);
+    // Format: move depth time_spent_ms total_nodes
+    snprintf(result, sizeof(result), "%s %d %.1f %d", best_move, completed_depth, time_spent, 0);
     return result;
 }

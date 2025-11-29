@@ -51,13 +51,13 @@ def main():
         (single_move, single_depth, single_ms), t_single = time_call(
             find_best_move_timed_from_c, fen, max_ms
         )
-        (para_move, para_depth, para_ms), t_parallel = time_call(
+        (para_move, para_depth, para_ms, para_nodes), t_parallel = time_call(
             find_best_move_parallel_timed_from_c, fen, max_ms, threads
         )
 
         speedup = t_single / t_parallel if t_parallel > 0 else 0
         print(f"  single-thread:  {t_single:6.3f}s (engine {single_ms/1000:5.2f}s, depth {single_depth}, move {single_move})")
-        print(f"  {threads} threads: {t_parallel:6.3f}s (engine {para_ms/1000:5.2f}s, depth {para_depth}, move {para_move})")
+        print(f"  {threads} threads: {t_parallel:6.3f}s (engine {para_ms/1000:5.2f}s, depth {para_depth}, move {para_move}, nodes {para_nodes})")
         print(f"  speedup:       {speedup:6.2f}x")
 
         if t_parallel > t_single:
