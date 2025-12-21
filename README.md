@@ -1,6 +1,6 @@
 <div align="center">
     <img src="Images/Mergen.png" alt="Mergen" height=500 />
-    (Mergen (right) and Timur (left) playing chess on the Central Asian steppes, iamge created by Gemini.)
+    (Mergen (right) and Timur (left) playing chess on the Central Asian steppes, image created by Gemini.)
 </div>
 
 # MERGEN: A Chess AI Inspired by the Spirit of Intelligence and Strategy
