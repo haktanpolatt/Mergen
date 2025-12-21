@@ -91,7 +91,7 @@ Errors: 0
 
 The test suite provides comprehensive coverage of:
 
-✅ **Move Generation (10 tests)**
+**Move Generation (10 tests)**
 - Starting position has 20 legal moves
 - No illegal moves generated
 - Checkmate detection working
@@ -101,7 +101,7 @@ The test suite provides comprehensive coverage of:
 - Pawn promotion
 - PERFT validation (depths 1-2)
 
-✅ **Evaluation Function (11 tests)**
+**Evaluation Function (11 tests)**
 - Starting position evaluates near 0 (balanced)
 - Material advantages scored correctly
 - Queen valued ~9 pawns
@@ -113,7 +113,7 @@ The test suite provides comprehensive coverage of:
 - Mobility affects evaluation
 - Checkmate has extreme score
 
-✅ **Tactical Strength (11 tests)**
+**Tactical Strength (11 tests)**
 - Smothered mate detection
 - Back rank mate patterns
 - Anastasia's mate (mate in 2)
@@ -128,7 +128,7 @@ The test suite provides comprehensive coverage of:
 - Avoids hanging queen
 - Defends against back rank threats
 
-✅ **Opening Book (10 tests)**
+**Opening Book (10 tests)**
 - Book loads successfully (108 positions)
 - Starting position in book
 - Gets moves from starting position
@@ -140,7 +140,7 @@ The test suite provides comprehensive coverage of:
 - Can add new moves
 - Can add complete opening lines
 
-✅ **PGN/FEN Functionality (12 tests)**
+**PGN/FEN Functionality (12 tests)**
 - Save games to PGN format
 - Load games from PGN files
 - PGN headers correct (Event, White, Black, Depth)
@@ -191,14 +191,14 @@ python3 run_tests.py -q         # Quiet (minimal) output
 
 ## Key Accomplishments
 
-1. ✅ Created 62 comprehensive tests
-2. ✅ All tests passing (100% success rate)
-3. ✅ Proper test structure with unittest framework
-4. ✅ Test runner with category support
-5. ✅ Complete documentation
-6. ✅ Type-safe test code
-7. ✅ Realistic test positions
-8. ✅ CI/CD ready
+1. Created 62 comprehensive tests
+2. All tests passing (100% success rate)
+3. Proper test structure with unittest framework
+4. Test runner with category support
+5. Complete documentation
+6. Type-safe test code
+7. Realistic test positions
+8. CI/CD ready
 
 ## Next Steps for Users
 
@@ -212,16 +212,16 @@ The test suite is ready to use:
 
 ## Files Modified/Created
 
-- ✅ `tests/__init__.py` - Package init
-- ✅ `tests/test_move_generation.py` - Move generation tests
-- ✅ `tests/test_evaluation.py` - Evaluation tests  
-- ✅ `tests/test_tactics.py` - Tactical tests
-- ✅ `tests/test_opening_book.py` - Opening book tests
-- ✅ `tests/test_pgn.py` - PGN save/load tests
-- ✅ `tests/test_parallel_search.py` - Parallel search legality tests
-- ✅ `tests/test_time_management.py` - Time control behavior tests
-- ✅ `run_tests.py` - Test runner script
-- ✅ `tests/README.md` - Test documentation
+- `tests/__init__.py` - Package init
+- `tests/test_move_generation.py` - Move generation tests
+- `tests/test_evaluation.py` - Evaluation tests  
+- `tests/test_tactics.py` - Tactical tests
+- `tests/test_opening_book.py` - Opening book tests
+- `tests/test_pgn.py` - PGN save/load tests
+- `tests/test_parallel_search.py` - Parallel search legality tests
+- `tests/test_time_management.py` - Time control behavior tests
+- `run_tests.py` - Test runner script
+- `tests/README.md` - Test documentation
 
 ## Conclusion
 

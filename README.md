@@ -17,12 +17,18 @@ Drawing inspiration from this legendary figure, we have developed a chess AI tha
 - **Opening Book**: 108 positions with 186 moves covering major openings
 - **Tactical Awareness**: Quiescence search prevents horizon effect and tactical blindness
 - **Optimized Performance**: 8.6x search speedup with futility pruning and enhanced evaluation
-- **Search Enhancements**: Iterative deepening with Principal Variation (PV) tracking
+- **Search Enhancements**: 
+  - Iterative deepening with Principal Variation (PV) tracking
+  - Aspiration windows for faster search
+  - Null move pruning for deep searches
+  - Late move reductions (LMR)
+  - Countermove heuristic for better move ordering
 - **Multi-Threading**: Lazy SMP parallel search (1-16 threads, 2-4x speedup)
 - **Pawn Promotion Choice**: Select promotion piece (queen, rook, bishop, knight)
 - **Smart Time Management**: Adaptive time allocation with support for bullet, blitz, rapid, and classical time controls
 - **Game Persistence**: PGN save/load with full game history
 - **Comprehensive Tests**: 62 unit tests covering all components
+- **Testing Framework**: Engine vs Engine tournament system for objective strength measurement
 - **Developer Utilities**: `parallel_benchmark.py` to spot single vs. multi-thread timing regressions at depth 3
 
 ## How to Run Mergen?
@@ -100,9 +106,23 @@ cd Source/C
 gcc -O3 -shared -fPIC -o Engine.dylib Engine.c Board.c MoveGen.c Evaluate.c Minimax.c Move.c Rules.c Zobrist.c TT.c Ordering.c KillerMoves.c -Wno-stringop-overflow
 ```
 
-## Recent Updates (November 2025)
+## Recent Updates (December 2025)
 
-### UCI Protocol Support (November 24) **NEW!**
+### Countermove Heuristic (December 21) **NEW!**
+- **Better Move Ordering**: Tracks which moves work well as responses to opponent moves
+- **Smarter Search**: Complements killer moves and history heuristic
+- **Expected Gain**: 10-20 ELO improvement
+- **Integration**: Fully integrated with existing search optimizations
+
+### Engine vs Engine Testing Framework (December 21) **NEW!**
+- **Tournament System**: Round-robin tournaments between engine versions
+- **Objective Measurement**: ELO estimation and win rate tracking
+- **Regression Testing**: Verify improvements don't break functionality
+- **PGN Export**: Save all tournament games for analysis
+- **Usage**: `python3 tournament.py --engines "python3 uci.py" "python3 uci.py" --depth 3 --games 4`
+- See `Documents/Testing.md` for complete guide
+
+### UCI Protocol Support (November 24)
 - **Universal Chess Interface**: Compatible with any UCI chess GUI
 - **GUI Support**: Arena, ChessBase, Cute Chess, and more
 - **Online Play**: Can be used as lichess.org bot
@@ -134,15 +154,16 @@ gcc -O3 -shared -fPIC -o Engine.dylib Engine.c Board.c MoveGen.c Evaluate.c Mini
 - **Adaptive Depth**: Searches as deep as possible within time limit
 - See `Documents/TimeManagement.md` for details
 
-### Opening Book
-- **108 positions** with 186 total moves
-- 25+ major opening systems
-- Instant book moves (no calculation needed)
-- Weighted move selection for variety
-- See `Documents/OpeningBook.md` for details
-
-### Testing NEW!
-- **62 Comprehensive Tests**: Move generation, evaluation, tactics, opening book, PGN, time management, parallel-search sanity
+### Documentation
+- **Testing Framework Guide**: Engine vs Engine tournament system (`Documents/Testing.md`) **NEW!**
+- **UCI Protocol Guide**: Complete UCI implementation guide (`Documents/UCI.md`)
+- **Bibliography**: Academic references for all algorithms (`Documents/Bibliography.md`)
+- **Time Management Guide**: Complete guide to time controls (`Documents/TimeManagement.md`)
+- **Opening Book Guide**: Opening coverage and customization (`Documents/OpeningBook.md`)
+- **Multi-Threading Guide**: Lazy SMP parallelization (`Documents/MultiThreading.md`)
+- **Test Suite Guide**: Test coverage and usage (`Documents/TestSuite.md`)
+- **Update Summary**: All improvements documented (`Documents/UpdateSummary.md`)
+- Proper citations for minimax, alpha-beta, transposition tables, and moreg book, PGN, time management, parallel-search sanity
 - **Test Runner**: `python3 run_tests.py` (with category support)
 - **100% Passing**: All tests verified
 - **CI/CD Ready**: Professional test infrastructure

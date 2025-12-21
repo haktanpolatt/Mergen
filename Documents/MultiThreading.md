@@ -322,10 +322,10 @@ for threads in [1, 2, 4, 6, 8]:
 ## Conclusion
 
 Multi-threading with Lazy SMP provides:
-- ✅ **2-4x speedup** with 4-8 cores
-- ✅ **Simple implementation** with minimal overhead
-- ✅ **Compatible** with existing features
-- ✅ **Cross-platform** support (Windows/Linux/macOS)
+- **2-4x speedup** with 4-8 cores
+- **Simple implementation** with minimal overhead
+- **Compatible** with existing features
+- **Cross-platform** support (Windows/Linux/macOS)
 
 **Result:** Significantly stronger play in time-limited games!
 

@@ -7,9 +7,12 @@
 */
 
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #ifdef _WIN32
 #include <windows.h>
+#else
+#define _POSIX_C_SOURCE 199309L
 #endif
 #include "Minimax.h"
 #include "Evaluate.h"
@@ -33,6 +36,7 @@ static double now_ms(void) {
     return (double)ts.tv_sec * 1000.0 + (double)ts.tv_nsec / 1e6;
 #endif
 }
+static int g_time_limit_enabled = 0;
 
 static int g_time_limit_enabled = 0;
 static double g_time_start_ms = 0.0;
@@ -117,8 +121,8 @@ static float quiescence(Position* pos, float alpha, float beta, int maximizingPl
     return maximizingPlayer ? alpha : beta;
 }
 
-// MINIMAX + TT + QUIESCENCE + LATE MOVE REDUCTIONS + FUTILITY PRUNING
-float minimax(Position* pos, int depth, float alpha, float beta, int maximizingPlayer) {
+// MINIMAX + TT + QUIESCENCE + LATE MOVE REDUCTIONS + FUTILITY PRUNING + COUNTERMOVE
+float minimax_with_last_move(Position* pos, int depth, float alpha, float beta, int maximizingPlayer, const char* last_move) {
     if (time_exceeded()) {
         return evaluate_board(pos);
     }
@@ -166,7 +170,7 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
         null_pos.ep_rank = -1;
         null_pos.ep_file = -1;
 
-        float null_eval = minimax(&null_pos, depth - 1 - reduction, alpha, beta, !maximizingPlayer);
+        float null_eval = minimax_with_last_move(&null_pos, depth - 1 - reduction, alpha, beta, !maximizingPlayer, NULL);
         if (maximizingPlayer && null_eval >= beta) {
             tt_store(hash, beta, depth);
             return beta;
@@ -178,6 +182,26 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
 
     char moves[256][6];
     int num_moves = generate_legal_moves(pos, maximizingPlayer, moves);
+    
+    // Countermove heuristic: Try countermove first if available
+    if (last_move) {
+        const char* counter = get_countermove(last_move);
+        if (counter) {
+            for (int i = 0; i < num_moves; i++) {
+                if (strcmp(moves[i], counter) == 0 && i != 0) {
+                    // Move countermove to position 1 (after PV/TT move at position 0)
+                    char temp[6];
+                    strcpy(temp, moves[i]);
+                    for (int j = i; j > 1; j--) {
+                        strcpy(moves[j], moves[j-1]);
+                    }
+                    if (num_moves > 1) strcpy(moves[1], temp);
+                    break;
+                }
+            }
+        }
+    }
+    
     sort_moves(pos, moves, num_moves, depth);
 
     if (num_moves == 0) { // No moves → game might be over
@@ -217,31 +241,34 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
             
             float eval;
             if (i == 0) {
-                eval = minimax(&copy, search_depth, alpha, beta, 0);
+                eval = minimax_with_last_move(&copy, search_depth, alpha, beta, 0, moves[i]);
             } else if (!is_capture) {
                 // PVS: try zero-width window first
-                eval = minimax(&copy, search_depth, alpha, alpha + 1, 0);
+                eval = minimax_with_last_move(&copy, search_depth, alpha, alpha + 1, 0, moves[i]);
                 if (eval > alpha && eval < beta) {
-                    eval = minimax(&copy, search_depth, alpha, beta, 0);
+                    eval = minimax_with_last_move(&copy, search_depth, alpha, beta, 0, moves[i]);
                 } else if (eval >= beta) {
                     // Cut immediately
                     eval = beta;
                 }
             } else {
-                eval = minimax(&copy, search_depth, alpha, beta, 0);
+                eval = minimax_with_last_move(&copy, search_depth, alpha, beta, 0, moves[i]);
             }
             
             // If LMR search raised alpha, re-search at full depth
             if (needs_full_search && eval > alpha) {
-                eval = minimax(&copy, depth - 1, alpha, beta, 0);
+                eval = minimax_with_last_move(&copy, depth - 1, alpha, beta, 0, moves[i]);
             }
 
             if (eval > max_eval) max_eval = eval;
             if (eval > alpha) alpha = eval;
             if (beta <= alpha) { // Beta cut-off
-                if (!is_capture) { // Quiet move
+                if (!is_capture) { // Quiet move caused cutoff
                     update_history(moves[i], depth);
                     add_killer_move(depth, moves[i]);
+                    if (last_move) {
+                        update_countermove(last_move, moves[i]);
+                    }
                 }
                 break;
             }
@@ -277,30 +304,33 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
             
             float eval;
             if (i == 0) {
-                eval = minimax(&copy, search_depth, alpha, beta, 1);
+                eval = minimax_with_last_move(&copy, search_depth, alpha, beta, 1, moves[i]);
             } else if (!is_capture) {
                 // PVS window
-                eval = minimax(&copy, search_depth, beta - 1, beta, 1);
+                eval = minimax_with_last_move(&copy, search_depth, beta - 1, beta, 1, moves[i]);
                 if (eval < beta && eval > alpha) {
-                    eval = minimax(&copy, search_depth, alpha, beta, 1);
+                    eval = minimax_with_last_move(&copy, search_depth, alpha, beta, 1, moves[i]);
                 } else if (eval <= alpha) {
                     eval = alpha;
                 }
             } else {
-                eval = minimax(&copy, search_depth, alpha, beta, 1);
+                eval = minimax_with_last_move(&copy, search_depth, alpha, beta, 1, moves[i]);
             }
             
             // If LMR search lowered beta, re-search at full depth
             if (needs_full_search && eval < beta) {
-                eval = minimax(&copy, depth - 1, alpha, beta, 1);
+                eval = minimax_with_last_move(&copy, depth - 1, alpha, beta, 1, moves[i]);
             }
 
             if (eval < min_eval) min_eval = eval;
             if (eval < beta) beta = eval;
             if (beta <= alpha) { // Alpha cut-off
-                if (!is_capture) { // Quiet move
+                if (!is_capture) { // Quiet move caused cutoff
                     update_history(moves[i], depth);
                     add_killer_move(depth, moves[i]);
+                    if (last_move) {
+                        update_countermove(last_move, moves[i]);
+                    }
                 }
                 break;
             }
@@ -308,4 +338,9 @@ float minimax(Position* pos, int depth, float alpha, float beta, int maximizingP
         tt_store(hash, min_eval, depth);
         return min_eval;
     }
+}
+
+// Backward compatibility wrapper - calls minimax_with_last_move with NULL
+float minimax(Position* pos, int depth, float alpha, float beta, int maximizingPlayer) {
+    return minimax_with_last_move(pos, depth, alpha, beta, maximizingPlayer, NULL);
 }

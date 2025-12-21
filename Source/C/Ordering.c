@@ -14,6 +14,9 @@
 // History table for move ordering (quiet moves)
 int history_table[64][64] = {0};
 
+// Countermove table: stores best response to each move [from_sq][to_sq] -> response_move
+char countermove_table[64][64][6] = {{{0}}};
+
 // Global pointer (for qsort)
 static Position* current_pos = NULL;
 
@@ -55,7 +58,7 @@ static int move_score(const char* move, int depth) {
         // Capture → MVV-LVA
         return mvv_lva[piece_index(victim.type)][piece_index(attacker.type)] + 100000;
     } else {
-        // Quiet move → history + killer bonus
+        // Quiet move → history + killer bonus + countermove bonus
         int from_sq = from_rank * 8 + from_file;
         int to_sq   = to_rank * 8 + to_file;
         int score   = history_table[from_sq][to_sq];
@@ -134,4 +137,40 @@ void update_history(const char* move, int depth) {
             }
         }
     }
+}
+
+// Update the countermove table
+// Records which move works well as a response to the previous move
+void update_countermove(const char* previous_move, const char* response_move) {
+    if (!previous_move || !response_move) return;
+    
+    int prev_from_file = previous_move[0] - 'a';
+    int prev_from_rank = '8' - previous_move[1];
+    int prev_to_file   = previous_move[2] - 'a';
+    int prev_to_rank   = '8' - previous_move[3];
+    
+    int prev_from_sq = prev_from_rank * 8 + prev_from_file;
+    int prev_to_sq   = prev_to_rank * 8 + prev_to_file;
+    
+    // Store the response move as the countermove
+    strncpy(countermove_table[prev_from_sq][prev_to_sq], response_move, 5);
+    countermove_table[prev_from_sq][prev_to_sq][5] = '\0';
+}
+
+// Get the countermove for a given move
+const char* get_countermove(const char* previous_move) {
+    if (!previous_move) return NULL;
+    
+    int prev_from_file = previous_move[0] - 'a';
+    int prev_from_rank = '8' - previous_move[1];
+    int prev_to_file   = previous_move[2] - 'a';
+    int prev_to_rank   = '8' - previous_move[3];
+    
+    int prev_from_sq = prev_from_rank * 8 + prev_from_file;
+    int prev_to_sq   = prev_to_rank * 8 + prev_to_file;
+    
+    if (countermove_table[prev_from_sq][prev_to_sq][0] != '\0') {
+        return countermove_table[prev_from_sq][prev_to_sq];
+    }
+    return NULL;
 }

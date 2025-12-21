@@ -9,11 +9,11 @@ Mergen now supports the **Universal Chess Interface (UCI) protocol**, making it 
 UCI is a standardized protocol for chess engines to communicate with graphical user interfaces (GUIs). It was developed by Rudolf Huber and Stefan Meyer-Kahlen and is now the de facto standard for chess engines worldwide.
 
 **Key Benefits:**
-- ✅ Works with any UCI-compatible chess GUI
-- ✅ Enables online play (lichess.org bots)
-- ✅ Tournament ready
-- ✅ Standardized communication protocol
-- ✅ No GUI coding required
+- Works with any UCI-compatible chess GUI
+- Enables online play (lichess.org bots)
+- Tournament ready
+- Standardized communication protocol
+- No GUI coding required
 
 ## Features
 
